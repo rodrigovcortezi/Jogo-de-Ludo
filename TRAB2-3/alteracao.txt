@@ -1,0 +1,11 @@
+
+
+Arquivo alterado: PECAS.H
+Quantidade de alterações: 1
+
+1)
+Linha: 53
+Descrição: ajuste da declaração do typedef.
+
+
+

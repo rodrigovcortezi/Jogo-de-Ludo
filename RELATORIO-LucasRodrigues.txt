@@ -1,0 +1,89 @@
+***********************************************************************
+******************     Relatorio de Trabalho      *********************
+***********************************************************************
+
+Nome: Lucas Rodrigues
+Matricula: 1510848
+Curso: Sistemas de Informação
+Disciplina: Programacao Modular
+Professor: Alessandro Garcia
+Email: lucasrdoficial@gmail.com
+
+***********************************************************************
+****************     Expecificacao de Relatorio     *******************
+***********************************************************************
+
+Esse relatorio é referente ao trabalho 2-1/2-2/2-3/2-4 que tem 
+como objetivo a criação dos módulos: lista circular, peça e tabuleiro
+e alteração no módulo lista, para serem utilizados em um jogo de Ludo
+
+***********************************************************************
+*****************  Informacoes sobre horas trabalhadas ****************
+***********************************************************************
+Modelo : Data/Horas_Trabalhas/TipoTarefa/DescricaoDaTarefa 
+
+*16/09/2016
+*2 horas trabalhadas
+*Estudar
+*Estudando como seria a arquitetura e os requisitos do software para
+iniciar a codificação.
+
+*17/09/2016
+*4 horas trabalhadas
+*Especificar os módulos/Codificar módulo
+*Especificar e codificar LCIRC.H e LISTA.H
+
+*23/09/2016
+*3 horas trabalhadas
+*Revisar código do módulo
+*Revisão e ajustes de LISTA.H
+
+*25/09/2016 
+*3 horas trabalhadas
+*Especificar as funções
+*Especificação das funções do LCIRC.C e finalização do LCIRC.H
+
+*26/09/2016
+*4 horas trabalhadas
+*Estudar/Projetar/Revisar projetos
+*Início da descrição de Especificação de Requisitos
+
+*27/09/2016
+*4 horas trabalhadas
+*Estudar
+*Estudando como fazer o módulo peças
+
+*28/09/2016
+*5 horas trabalhadas
+*Especificar os módulos/Especificar as funções/Codificar módulo
+*Implementação e término de PECAS.H, PECAS.C e TABULEIRO.H
+
+*08/10/2016
+*3 horas trabalhadas
+*Revisar projetos
+*Ajustes na Especificação de Requisitos
+
+*09/10/2016
+*4 horas trabalhadas
+*Estudar/Projetar/Revisar projetos
+*Início e término da Arquitetura e Modelo do Software
+
+*15/10/2016
+*2 horas trabalhadas
+*Finalizações
+*Finalização da Especificação de Requisitos
+
+*16/10/2016 
+*3 horas trabalhadas
+*Revisar projetos
+*Revisei todos os modulos e padronizei para entrega alem de criar
+o relatorio e o padronizar todo o trabalho para entrega.
+
+*17/10/2016
+*5 horas trabalhadas
+*Revisar projetos/Finalizar erros
+*Enxergamos a presenca de erros nos modulos e tivemos que alterar
+
+**********************************************************************
+*************************       FIM       ****************************
+**********************************************************************

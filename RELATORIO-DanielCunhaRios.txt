@@ -1,0 +1,84 @@
+***********************************************************************
+******************     Relatorio de Trabalho      *********************
+***********************************************************************
+
+Nome: Daniel Cunha Rios
+Matricula: 1512920
+Curso: Ciência da Computação
+Disciplina: Programacao Modular
+Professor: Alessandro Garcia
+Email: daniel_ahnuc10@hotmail.com
+
+***********************************************************************
+****************     Expecificacao de Relatorio     *******************
+***********************************************************************
+
+Esse relatorio é referente ao trabalho 2-1/2-2/2-3/2-4 que tem 
+como objetivo a criação dos módulos: lista circular, peça e tabuleiro
+e alteração no módulo lista, para serem utilizados em um jogo de Ludo
+
+***********************************************************************
+*****************  Informacoes sobre horas trabalhadas ****************
+***********************************************************************
+Modelo : Data/Horas_Trabalhas/TipoTarefa/DescricaoDaTarefa 
+
+
+*17/09/2016 
+*5 horas trabalhadas
+*Estudar/Codificar módulo
+*Estudo de como será as implementações dos módulos, e codificação do
+módulo LCIRC.C.
+
+*24/09/2016
+*3 horas trabalhadas
+*Codificar módulo
+*Implementação de TESTCIR.C
+
+*30/09/2016
+*6 horas trabalhadas
+*Codificar módulos
+*Implementação TESTPEC.C e TESTTAB.C
+
+*02/10/2016
+*2 horas trabalhadas
+*Revisar código do módulo
+*Ajuste do TESTLIS.C
+
+*08/10/2016
+*5 horas trabalhadas
+*Redigir script de teste
+*Começo do script de teste de todos os módulos.
+
+*09/10/2016
+*4 horas trabalhando
+*Finalização redigir script de teste/Revisar script de teste/Realizar os testes/ Diagnosticar os problemas encontrados
+*Finalização do script e executar o teste, corrigindo os erros encontrados e aperfeiçoando o código.
+
+*10/10/2016
+*4 horas trabalhando
+*Realizar os testes/ Diagnosticar os problemas encontrados
+*Executar o teste, corrigindo os erros encontrados e aperfeiçoando os códigos.
+
+*14/10/2016
+*2 horas trabalhando
+*Revisar projetos/Finalizações
+*Finalização do módulo TESTCIR.C e TESTTAB.C
+
+*15/10/2016
+*5 horas trabalhando
+*Revisar projetos/Revisar código dos módulos
+*Revisei todos os códigos de cada módulo e cada arquivo nas pastas para certificar que estavam dentro do padrão exigido
+
+*16/10/2016
+*2 horas trabalhando
+*Alteração no script da lista/Finalizações
+*Alterações no script da lista, após serem feitas modificações. Finalização do projeto, confirmando todos os módulos e corrigindo-os para o padrão exigido, para poder ocorrer a entrega.
+
+*17/10/2016
+*5 horas trabalhadas
+*Revisar projetos/Finalizar erros
+*Enxergamos a presenca de erros nos modulos e tivemos que alterar
+
+**********************************************************************
+*************************       FIM       ****************************
+**********************************************************************
