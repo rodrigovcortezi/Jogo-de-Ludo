@@ -62,7 +62,7 @@ typedef struct TAB_casa {
         /* Ponteiro para o desvio */
  
 } TAB_Casa ;
- 
+typedef void ( *pFunc ) ( void * ) ; typedef void **ppVoid ;
  
 /***** Protótipo das funções encapsuladas no módulo *****/
  
@@ -103,7 +103,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
         return TAB_CondRetFaltouMemoria ;
     }
  
-    retorno_lst = LST_CriaLista ( &pListaCirc , LiberarCasa ) ;
+    retorno_lst = LST_CriaLista ( &pListaCirc , ( pFunc ) LiberarCasa ) ;
     if ( retorno_lst != LST_CondRetOK )
     {
         return TAB_CondRetFaltouMemoria ;
@@ -126,7 +126,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
  
         }
  
-        retorno_lis = LIS_CriarLista( LiberarCasa , &pListaSimples ) ;
+        retorno_lis = LIS_CriarLista( ( pFunc ) LiberarCasa , &pListaSimples ) ;
         if ( retorno_lis != LIS_CondRetOK )
         {
             return TAB_CondRetFaltouMemoria ;
@@ -203,13 +203,13 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
         return TAB_CondRetNaoEncontrouPeca ;
     }
     
-    LST_ObterValor ( pTabuleiro->casas , &casa ) ;
+    LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
     aux = casa ;
     if ( final == 0 ) {
 
     	while ( aux->cor != cor && n > 0 ) {
     		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-    		LST_ObterValor ( pTabuleiro->casas , &aux ) ;
+    		LST_ObterValor ( pTabuleiro->casas , (ppVoid) &aux ) ;
     		n -- ;
     	}
     	if ( aux->cor == cor ) {
@@ -218,7 +218,7 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
     		retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , n-1 ) ;
     		if ( retorno_lis == LIS_CondRetFimLista )
     			return TAB_CondRetMovimentoInvalido ;
-    		LIS_ObterValor ( caminho_final , &aux ) ;
+    		LIS_ObterValor ( caminho_final , ( ppVoid ) &aux ) ;
     	}
 
     }
@@ -228,7 +228,7 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
     	retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , n ) ;
     	if ( retorno_lis == LIS_CondRetFimLista )
     		return TAB_CondRetMovimentoInvalido ;
-    	LIS_ObterValor ( caminho_final , &aux ) ;
+    	LIS_ObterValor ( caminho_final , ( ppVoid ) &aux ) ;
 
     }
 
@@ -300,30 +300,29 @@ static int ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )			//
     PEC_ObtemInfo ( pPeca , &cor, &final, &status ) ;
 
     if ( final == 0 ) {
-    	LST_ObterValor ( pTabuleiro->casas , &casa ) ;
+    	LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
     	aux = casa ;
     	do {
     		if (aux->conteudo == pPeca )
     			return 1 ;
     		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-    		LST_ObterValor ( pTabuleiro->casas , &aux ) ;
+    		LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &aux ) ;
     	} while ( aux != casa ) ;
     }
     else {
 
-    	LST_ObterValor ( pTabuleiro->casas , &casa ) ;
+    	LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
     	aux = casa ;
     	do {
     		if ( aux->cor == cor ) {
 
     			caminho_final = aux->desvio ;
     			LIS_IrInicioLista( caminho_final ) ;
-    			retorno_lis = LIS_ObterValor ( caminho_final , &aux2 ) ;
-
+    			retorno_lis = LIS_ObterValor ( caminho_final , ( ppVoid ) &aux2 ) ;
     			while ( retorno_lis != LIS_CondRetFimLista && aux2->conteudo != pPeca ) {
 
     				LIS_AvancarElementoCorrente( caminho_final , 1 ) ;
-    				LIS_ObterValor ( caminho_final , &aux2 ) ;
+    				LIS_ObterValor ( caminho_final , ( ppVoid ) &aux2 ) ;
 
     			}
 
@@ -334,7 +333,7 @@ static int ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )			//
 
     		}
     		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-    		LST_ObterValor ( pTabuleiro->casas , &aux ) ;
+    		LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &aux ) ;
     	} while ( aux != casa ) ;
 
     }
