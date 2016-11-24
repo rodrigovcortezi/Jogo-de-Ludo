@@ -258,7 +258,7 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
 *  ****/
  
  
-TAB_CondRet TAB_InserePecaInicio ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca )
+TAB_CondRet TAB_InserePecaInicio ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 {
      
     int cor, final , cor2, final2 ;
@@ -326,7 +326,7 @@ TAB_CondRet TAB_LancaDado ( int * pValor )
 } /* Fim função: TAB  &Gera Valor */
 
 
- 
+
 /***************************************************************************
 *
 *  Função: TAB  &Destroi Tabuleiro
