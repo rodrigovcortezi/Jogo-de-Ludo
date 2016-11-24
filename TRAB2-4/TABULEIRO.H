@@ -133,7 +133,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_tpLudo * pTabuleiro ) ;
 *
 *  Fim Assertiva de Entrada TAB_MovePeca */
 
-//TAB_CondRet TAB_MovePeca( TAB_tpLudo pTabuleiro, PEC_tpPeca pPeca , int n ) ;
+TAB_CondRet TAB_MovePeca( TAB_tpLudo pTabuleiro, PEC_tpPeca pPeca , int n ) ;
 
 /* Assertiva de Saida TAB_MovePeca
 *  A funcao retornara um TAB_tpCondRet
@@ -163,7 +163,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_tpLudo * pTabuleiro ) ;
 *
 *  Fim Assertiva de Entrada TAB_InserePecaInicio  */
 
-//TAB_CondRet TAB_InserePecaInicio ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+TAB_CondRet TAB_InserePecaInicio ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
 
 /* Assertiva de Saida TAB_InserePecaInicio
 *  Inseriu a peça no inicio do tabuleiro
@@ -192,7 +192,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_tpLudo * pTabuleiro ) ;
 *
 *  Fim Assertiva de Entrada TAB_LancaDado */
 
-//TAB_CondRet TAB_LancaDado ( int * pValor ) ;
+TAB_CondRet TAB_LancaDado ( int * pValor ) ;
 
 /* Assertiva de Saida TAB_LancaDado
 *  O valor gerado deverá ser corretamente armazenado em pValor.
