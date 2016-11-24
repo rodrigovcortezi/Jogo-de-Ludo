@@ -275,16 +275,16 @@ TAB_CondRet TAB_InserePecaInicio ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pP
     }
  
      
-    LST_ObterValor ( pTabuleiro->casas , casa ) ;
+    LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
  
     while ( casa->cor != cor ){
         LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-        LST_ObterValor ( pTabuleiro->casas , casa ) ;
+        LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
     }
  
     LST_AvancarElementoCorrente ( pTabuleiro->casas , 2 ) ;
  
-    LST_ObterValor ( pTabuleiro->casas , casa ) ;
+    LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
     
     
     if ( casa->conteudo != NULL ){
