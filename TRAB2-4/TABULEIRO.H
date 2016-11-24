@@ -104,7 +104,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_tpLudo * pTabuleiro ) ;
 *  A memoria referente a estrutura do tabuleiro tem que ser alocada
 *  A funcao retornara um TAB_CondRet
 *
-*  Fim Assertiva de Saida TAB_CriaTabuleiro_Ludo /
+*  Fim Assertiva de Saida TAB_CriaTabuleiro_Ludo */
 
 /***********************************************************************
 *
