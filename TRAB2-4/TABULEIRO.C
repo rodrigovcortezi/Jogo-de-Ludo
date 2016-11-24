@@ -181,7 +181,7 @@ TAB_CondRet TAB_MovePeca( TAB_Ludo pTabuleiro, PEC_tpPeca pPeca , int n )
  
     char status , status2 ;
 
-    LIS_tppLista lista_aux , caminho_final ;
+    LIS_tppLista caminho_final ;
 
     LIS_tpCondRet retorno_lis ;
 
@@ -223,7 +223,7 @@ TAB_CondRet TAB_MovePeca( TAB_Ludo pTabuleiro, PEC_tpPeca pPeca , int n )
 
     }
     else {
-    	
+
     	caminho_final = casa->desvio ;
     	retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , n ) ;
     	if ( retorno_lis == LIS_CondRetFimLista )
