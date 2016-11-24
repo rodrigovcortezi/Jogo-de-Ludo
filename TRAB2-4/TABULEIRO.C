@@ -1,4 +1,4 @@
-ALTERACAO
+
 /***************************************************************************
 *  $MCI Módulo de implementação: TAB  Tabuleiro
 *
@@ -69,7 +69,7 @@ typedef struct TAB_casa {
 static TAB_Casa *CriaCasa ( LIS_tppLista desvio , 
                              PEC_tpPeca conteudo , int cor ) ;
 
-static int ProcuraPeca ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca ) ;
+static int ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca ) ;
  
 static void LiberarCasa ( TAB_Casa *pCasa ) ;
  
@@ -172,7 +172,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
 *  ****/
  
  
-TAB_CondRet TAB_MovePeca( TAB_Ludo pTabuleiro, PEC_tpPeca pPeca , int n )
+TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int n )
 {
  
     TAB_Casa *casa , *aux;
@@ -289,9 +289,9 @@ static TAB_Casa *CriaCasa ( LIS_tppLista desvio , PEC_tpPeca conteudo , int cor 
     return nv ;
 } 
 
-static int ProcuraPeca ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca )			//retorna 1 caso tenha encontrado a peça e 0 caso contrário
+static int ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )			//retorna 1 caso tenha encontrado a peça e 0 caso contrário
 {
-    TAB_casa *casa, *aux, *aux2 ;
+    TAB_Casa *casa, *aux, *aux2 ;
     LIS_tppLista caminho_final ;
     LIS_tpCondRet retorno_lis ;
     int cor, final ; 
@@ -327,7 +327,7 @@ static int ProcuraPeca ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca )			//retorna 1 
 
     			}
 
-    			if ( aux2->conteudo == conteudo )
+    			if ( aux2->conteudo == pPeca )
     				return 1 ;
 
     			return 0 ;
