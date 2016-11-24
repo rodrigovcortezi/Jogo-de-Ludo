@@ -175,13 +175,13 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
 TAB_CondRet TAB_MovePeca( TAB_Ludo pTabuleiro, PEC_tpPeca pPeca , int n )
 {
  
-    TAB_Casa *casa , *aux ;
- 
-    int cor , final , cor2, final2 ;
+    TAB_Casa *casa , *aux;
+
+    int cor , final , cor2, final2 , cond ;
  
     char status , status2 ;
 
-    LIS_tppLista lista_aux ;
+    LIS_tppLista lista_aux , caminho_final ;
 
     LIS_tpCondRet retorno_lis ;
 
@@ -197,65 +197,54 @@ TAB_CondRet TAB_MovePeca( TAB_Ludo pTabuleiro, PEC_tpPeca pPeca , int n )
         return TAB_CondRetPecaMorta ;
     }
  
-    casa = ProcuraPeca ( pTabuleiro , pPeca ) ;
-    if ( casa == NULL )
+    cond = ProcuraPeca ( pTabuleiro , pPeca ) ;
+    if ( cond == 0 )
     {
         return TAB_CondRetNaoEncontrouPeca ;
     }
     
+    LST_ObterValor ( pTabuleiro->casas , &casa ) ;
     aux = casa ;
- 
-    while ( n ) {
-                 
-        if ( casa->cor != cor ) {
+    if ( final == 0 ) {
 
-            LST_AvancarElementoCorrente ( pTabuleiro->casas , 1) ;
-            LST_ObterValor ( pTabuleiro->casas , casa ) ;
-            n-- ;
+    	while ( aux->cor != cor && n > 0 ) {
+    		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
+    		LST_ObterValor ( pTabuleiro->casas , &aux ) ;
+    		n -- ;
+    	}
+    	if ( aux->cor == cor ) {
+    		caminho_final = aux->desvio ;
+    		LIS_IrInicioLista ( caminho_final ) ;
+    		retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , n-1 ) ;
+    		if ( retorno_lis == LIS_CondRetFimLista )
+    			return TAB_CondRetMovimentoInvalido ;
+    		LIS_ObterValor ( caminho_final , &aux ) ;
+    	}
 
-        }
- 
-        else {
-            lista_aux = casa->desvio ;
+    }
+    else {
+    	
+    	caminho_final = casa->desvio ;
+    	retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , n ) ;
+    	if ( retorno_lis == LIS_CondRetFimLista )
+    		return TAB_CondRetMovimentoInvalido ;
+    	LIS_ObterValor ( caminho_final , &aux ) ;
 
-            if ( casa->desvio != NULL ) {
-
-                IrInicioLista ( lista_aux ) ;
-                n-- ;
-
-            }
-
-            retorno_lis = LIS_AvancarElementoCorrente ( lista_aux , n ) ;
-            if ( retorno_lis == LIS_CondRetFimLista )
-            {
-                return TAB_CondRetMovimentoInvalido ;    
-            }
-            
-            if ( final == 0 )
-                PEC_AtualizaPeca ( pPeca , 1 , 'D' ) ;
-            
-
-            LIS_ObterValor ( lista_aux , casa ) ;
-            break ;
-        } 
-        
     }
 
+    if ( aux->conteudo != NULL ){
     
-
-    if ( casa->conteudo != NULL ){
-    
-        PEC_ObtemInfo ( casa->conteudo , &cor2, &final2, &status2 ) ;
+        PEC_ObtemInfo ( aux->conteudo , &cor2, &final2, &status2 ) ;
         if ( cor2 == cor )
         {
             return TAB_CondRetMovimentoInvalido ;
         }
-        PEC_AtualizaPeca ( casa->conteudo , 0 , 'F' ) ;
+        PEC_AtualizaPeca ( aux->conteudo , 0 , 'F' ) ;
         
     }
 
-    aux->conteudo = NULL ;
-    casa->conteudo = pPeca ;
+    casa->conteudo = NULL ;
+    aux->conteudo = pPeca ;
  
     return TAB_CondRetOK ;
  
@@ -340,7 +329,7 @@ static int ProcuraPeca ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca )			//retorna 1 
 
     			if ( aux2->conteudo == conteudo )
     				return 1 ;
-    			
+
     			return 0 ;
 
     		}
