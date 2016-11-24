@@ -340,6 +340,8 @@ static int ProcuraPeca ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca )			//retorna 1 
 
     			if ( aux2->conteudo == conteudo )
     				return 1 ;
+    			
+    			return 0 ;
 
     		}
     		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
