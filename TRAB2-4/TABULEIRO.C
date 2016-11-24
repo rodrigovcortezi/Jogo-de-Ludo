@@ -294,7 +294,7 @@ TAB_CondRet TAB_InserePecaInicio ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pP
         {
             return TAB_CondRetMovimentoInvalido ;
         }
-        
+        PEC_AtualizaPeca ( casa->conteudo, 0, 'F' ) ;
     }
 
     PEC_AtualizaPeca ( pPeca , final , 'D' ) ;
