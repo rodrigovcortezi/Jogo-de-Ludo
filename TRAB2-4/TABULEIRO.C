@@ -250,6 +250,82 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
  
 }/* Fim função: TAB  &Mover Peça */
 
+
+ 
+/***************************************************************************
+*
+*  Função: TAB  &Insere peça no inicio
+*  ****/
+ 
+ 
+TAB_CondRet TAB_InserePecaInicio ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca )
+{
+     
+    int cor, final , cor2, final2 ;
+ 
+    char status , status2 ;
+ 
+    TAB_Casa *casa ;
+ 
+    PEC_ObtemInfo ( pPeca , &cor, &final, &status ) ;
+
+    if ( status == 'D' )
+    {
+        return TAB_CondRetMovimentoInvalido ;
+    }
+ 
+     
+    LST_ObterValor ( pTabuleiro->casas , casa ) ;
+ 
+    while ( casa->cor != cor ){
+        LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
+        LST_ObterValor ( pTabuleiro->casas , casa ) ;
+    }
+ 
+    LST_AvancarElementoCorrente ( pTabuleiro->casas , 2 ) ;
+ 
+    LST_ObterValor ( pTabuleiro->casas , casa ) ;
+    
+    
+    if ( casa->conteudo != NULL ){
+    
+        PEC_ObtemInfo ( casa->conteudo , &cor2, &final2, &status2 ) ;
+        if ( cor2 == cor )
+        {
+            return TAB_CondRetMovimentoInvalido ;
+        }
+        
+    }
+
+    PEC_AtualizaPeca ( pPeca , final , 'D' ) ;
+ 
+    casa->conteudo = pPeca ;
+ 
+    return TAB_CondRetOK ;
+ 
+} /* Fim função: TAB  &Insere peça no inicio */
+ 
+ 
+/***************************************************************************
+*
+*  Função: TAB  &Gera valor
+*  ****/
+ 
+TAB_CondRet TAB_LancaDado ( int * pValor )
+{
+  
+    int ValorAleatorio ;
+  
+    srand ( time ( NULL ) ) ;
+    ValorAleatorio = ( rand() % 6 ) + 1 ;
+      
+    * pValor = ValorAleatorio ;
+  
+    return TAB_CondRetOK ;
+  
+} /* Fim função: TAB  &Gera Valor */
+
+
  
 /***************************************************************************
 *
