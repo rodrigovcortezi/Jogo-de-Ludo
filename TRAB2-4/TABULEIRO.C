@@ -69,7 +69,7 @@ typedef struct TAB_casa {
 static TAB_Casa *CriaCasa ( LIS_tppLista desvio , 
                              PEC_tpPeca conteudo , int cor ) ;
 
-static TAB_Casa *ProcuraPeca ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca ) ;
+static int ProcuraPeca ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca ) ;
  
 static void LiberarCasa ( TAB_Casa *pCasa ) ;
  
@@ -300,52 +300,54 @@ static TAB_Casa *CriaCasa ( LIS_tppLista desvio , PEC_tpPeca conteudo , int cor 
     return nv ;
 } 
 
-static TAB_Casa *ProcuraPeca ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca )
+static int ProcuraPeca ( TAB_Ludo pTabuleiro , PEC_tpPeca pPeca )			//retorna 1 caso tenha encontrado a peça e 0 caso contrário
 {
-
-    TAB_Casa *casa , *aux ;
- 
-    int cor , final , flag , i ;
- 
+    TAB_casa *casa, *aux, *aux2 ;
+    LIS_tppLista caminho_final ;
+    LIS_tpCondRet retorno_lis ;
+    int cor, final ; 
     char status ;
- 
-    PEC_ObtemInfo( pPeca , &cor, &final, &status ) ;
+      
+    PEC_ObtemInfo ( pPeca , &cor, &final, &status ) ;
 
-    flag = 0 ;
     if ( final == 0 ) {
-        for ( i = 0 ; i < 52 ; i++ ){        
-            LST_ObterValor ( pTabuleiro->casas , casa ) ;
- 
-            if (casa->conteudo == pPeca)
-                return casa ;
-            else
-                LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-        }
+    	LST_ObterValor ( pTabuleiro->casas , &casa ) ;
+    	aux = casa ;
+    	do {
+    		if (aux->conteudo == pPeca )
+    			return 1 ;
+    		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
+    		LST_ObterValor ( pTabuleiro->casas , &aux ) ;
+    	} while ( aux != casa ) ;
     }
     else {
-        for ( i = 0 ; i < 52 && flag != 1 ; i++ ){
-            LST_ObterValor ( pTabuleiro->casas , casa ) ;
- 
-            if ( casa->desvio != NULL && casa->cor == cor ){
-                flag = 1 ;
-            }
-            else
-                LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-        }
- 
-        aux = casa;
-        IrInicioLista( casa->desvio ) ;
-        for ( i = 0 ; i < 6 ; i++ ){
-            LIS_ObterValor( casa->desvio , aux ) ;
-            if ( aux->conteudo == pPeca )
-                return casa ;
-            else
-                LIS_AvancarElementoCorrente ( casa->desvio , 1 ) ; 
-        }
- 
+
+    	LST_ObterValor ( pTabuleiro->casas , &casa ) ;
+    	aux = casa ;
+    	do {
+    		if ( aux->cor == cor ) {
+
+    			caminho_final = aux->desvio ;
+    			LIS_IrInicioLista( caminho_final ) ;
+    			retorno_lis = LIS_ObterValor ( caminho_final , &aux2 ) ;
+
+    			while ( retorno_lis != LIS_CondRetFimLista && aux2->conteudo != pPeca ) {
+
+    				LIS_AvancarElementoCorrente( caminho_final , 1 ) ;
+    				LIS_ObterValor ( caminho_final , &aux2 ) ;
+
+    			}
+
+    			if ( aux2->conteudo == conteudo )
+    				return 1 ;
+
+    		}
+    		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
+    		LST_ObterValor ( pTabuleiro->casas , &aux ) ;
+    	} while ( aux != casa ) ;
+
     }
- 
-    return NULL ;
+    return 0 ;
 }
  
 static void LiberarCasa ( TAB_Casa *pCasa ) 
