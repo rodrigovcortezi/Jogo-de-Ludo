@@ -51,14 +51,14 @@ typedef struct Peca {
 
 PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int ind, int cor ) 
 {
-	if(pPeca[ind]!=NULL)
-	{
-		return PEC_CondRetJaExiste;
-	}
-
 	if ( cor < 0 || cor > 3 )
 	{
 		return PEC_CondRetCorInvalida ;
+	}
+
+	if(pPeca[ind]!=NULL)
+	{
+		return PEC_CondRetJaExiste;
 	}
 
 	pPeca[ind] = ( PEC_Peca * ) malloc ( sizeof ( PEC_Peca ) ) ;
