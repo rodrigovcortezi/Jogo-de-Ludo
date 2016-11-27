@@ -56,6 +56,11 @@ PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int ind, int cor )
 		return PEC_CondRetJaExiste;
 	}
 
+	if ( cor < 0 || cor > 3 )
+	{
+		return PEC_CondRetCorInvalida ;
+	}
+
 	pPeca[ind] = ( PEC_Peca * ) malloc ( sizeof ( PEC_Peca ) ) ;
 
 	if ( pPeca[ind] == NULL ) 
@@ -63,10 +68,7 @@ PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int ind, int cor )
 		return PEC_CondRetFaltaMemoria ;
 	}
 
-	if ( cor < 0 || cor > 3 )
-	{
-		return PEC_CondRetCorInvalida ;
-	}
+	
 
 	pPeca[ind]->cor    = cor ;
 	pPeca[ind]->final  = 0   ;
