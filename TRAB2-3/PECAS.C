@@ -51,6 +51,11 @@ typedef struct Peca {
 
 PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int ind, int cor ) 
 {
+	if ( cor < 0 || cor > 3 )
+	{
+		return PEC_CondRetCorInvalida ;
+	}
+
 	if(pPeca[ind]!=NULL)
 	{
 		return PEC_CondRetJaExiste;
@@ -63,10 +68,7 @@ PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int ind, int cor )
 		return PEC_CondRetFaltaMemoria ;
 	}
 
-	if ( cor < 0 || cor > 3 )
-	{
-		return PEC_CondRetCorInvalida ;
-	}
+	
 
 	pPeca[ind]->cor    = cor ;
 	pPeca[ind]->final  = 0   ;
