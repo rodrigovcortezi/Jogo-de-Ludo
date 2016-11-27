@@ -83,15 +83,12 @@ PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int ind, int cor )
 *  Função: PEC  &Destroi Peca
 *  ****/
 
-PEC_CondRet PEC_DestroiPeca ( PEC_Peca ** pPeca, int ind  )
+PEC_CondRet PEC_DestroiPeca ( PEC_Peca *pPeca )
 {
-	if(pPeca[ind]!=NULL)
-	{
-	  pPeca[ind] = NULL;
-	  free(pPeca[ind]);
-	}
-	else
-	    return PEC_CondRetNaoExiste;
+	if ( pPeca == NULL )
+		return PEC_CondRetNaoExiste ;
+	
+	free( pPeca );
 
 	return PEC_CondRetOK ;
 

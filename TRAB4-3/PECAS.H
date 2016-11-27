@@ -144,14 +144,14 @@ PEC_CondRet PEC_CriaPeca ( PEC_tpPeca * pPeca, int ind, int cor ) ;
 ***********************************************************************/
 
 /* Assertivas de Entrada PEC_DestroiPeca
-*  Existir peça ja criada (para todo pPeca[ind], pPeca[ind] != NULL)
+*  Existir peça ja criada (para todo pPeca , pPeca != NULL)
 *
 *  Fim Assertiva de Entrada PEC_DestroiPeca */
 
-PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca * pPeca, int ind ) ;
+PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca pPeca ) ;
  
 /* Assertiva de Saida PEC_DestroiPeca
-*  A peca deve ser destruida (para todo pPeca[ind], pPeca[ind] = NULL)
+*  A peca deve ser destruida (para todo pPeca , pPeca = NULL)
 *  A memoria alocada para peca deve ser liberada 
 *  A funcao retorna um PEC_CondRet
 *
