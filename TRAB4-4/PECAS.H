@@ -167,7 +167,7 @@ PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca pPeca ) ;
 *  $EP Parametros
 *   pPeca - peça que procura saber a cor
 *  * cor - ponteiro passado para receber a cor
-*  * final - ponteiro passado para saber se peça está no estágio final
+*  * final - ponteiro passado para saber se peça está na casa final
 *  * status - ponteiro passado para saber se peça está em jogo
 *
 *  $FV Valor retornado
@@ -203,7 +203,7 @@ PEC_CondRet PEC_ObtemInfo ( PEC_tpPeca pPeca , int * cor,
 *
 *  $EP Parametros
 *   pPeca - peça que procura saber a cor
-*   final - atualizar se peça está no estágio final
+*   final - atualizar se peça está na casa final
 *   status - atualizar se se peça está em jogo
 *
 *  $FV Valor retornado
