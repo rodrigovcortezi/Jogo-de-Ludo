@@ -181,11 +181,11 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
  
     char status , status2 ;
 
-    LIS_tppLista caminho_final ;
+    LIS_tppLista caminho_final = NULL;
 
     LIS_tpCondRet retorno_lis ;
 
-    if ( n <= 0 )
+    if ( n <= 0 || n > 6 )
     {
         return TAB_CondRetMovimentoInvalido ;
     }
@@ -196,6 +196,11 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
     {
         return TAB_CondRetPecaMorta ;
     }
+
+    if ( final == 1 )
+    {
+        return TAB_CondRetMovimentoInvalido ;
+    }
  
     cond = ProcuraPeca ( pTabuleiro , pPeca ) ;
     if ( cond == 0 )
@@ -204,15 +209,16 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
     }
     
     LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
+
     aux = casa ;
-    if ( final == 0 ) {
+    if ( casa->conteudo == pPeca ) {     
 
     	while ( aux->cor != cor && n > 0 ) {
     		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
     		LST_ObterValor ( pTabuleiro->casas , (ppVoid) &aux ) ;
-    		n -- ;
+    		n-- ;
     	}
-    	if ( aux->cor == cor ) {
+    	if ( n != 0 ) {
     		caminho_final = aux->desvio ;
     		LIS_IrInicioLista ( caminho_final ) ;
     		retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , n-1 ) ;
@@ -222,26 +228,39 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
     	}
 
     }
-    else {
+    else {                  
 
     	caminho_final = casa->desvio ;
     	retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , n ) ;
     	if ( retorno_lis == LIS_CondRetFimLista )
     		return TAB_CondRetMovimentoInvalido ;
     	LIS_ObterValor ( caminho_final , ( ppVoid ) &aux ) ;
+        
+    }
+
+    if ( caminho_final != NULL ) {      //somente é necessario verificar se chegou na casa final se entrou na reta final
+
+        retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , 1 ) ;       
+        if ( retorno_lis == LIS_CondRetFimLista ) {                 //verifica se chegou na casa final
+            PEC_AtualizaPeca ( pPeca , 1 , 'D' ) ;      //se chegou, somente é sinalizado que aquela peça chegou na casa final ( final = 1 )
+            casa->conteudo = NULL ;         //limpa a casa onde a peça estava antes do movimento
+            // as peças que chegarem ao final não serão inseridas na casa final. Não é possível guardar mais de uma peça em uma casa
+            return TAB_CondRetOK ;
+        }
 
     }
 
-    if ( aux->conteudo != NULL ){
+    if ( aux->conteudo != NULL ) {
     
         PEC_ObtemInfo ( aux->conteudo , &cor2, &final2, &status2 ) ;
-        if ( cor2 == cor )
-        {
+        if ( cor2 == cor ) 
             return TAB_CondRetMovimentoInvalido ;
-        }
+              
         PEC_AtualizaPeca ( aux->conteudo , 0 , 'F' ) ;
         
     }
+
+
 
     casa->conteudo = NULL ;
     aux->conteudo = pPeca ;
