@@ -394,45 +394,33 @@ static int ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )			//
       
     PEC_ObtemInfo ( pPeca , &cor, &final, &status ) ;
 
-    if ( final == 0 ) {
-    	LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
-    	aux = casa ;
-    	do {
-    		if (aux->conteudo == pPeca )
-    			return 1 ;
-    		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-    		LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &aux ) ;
-    	} while ( aux != casa ) ;
-    }
-    else {
+    LST_ObterValor ( pTabuleiro->casas , (ppVoid) &casa ) ;
+    aux = casa ;
+    do {
 
-    	LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
-    	aux = casa ;
-    	do {
-    		if ( aux->cor == cor ) {
+        if ( aux->conteudo == pPeca )
+            return 1 ;
 
-    			caminho_final = aux->desvio ;
-    			LIS_IrInicioLista( caminho_final ) ;
-    			retorno_lis = LIS_ObterValor ( caminho_final , ( ppVoid ) &aux2 ) ;
-    			while ( retorno_lis != LIS_CondRetFimLista && aux2->conteudo != pPeca ) {
+        else if ( aux->cor == cor && aux->desvio != NULL ) {
+            caminho_final = aux->desvio ;
+            LIS_IrInicioLista( caminho_final ) ;
+            do {
 
-    				LIS_AvancarElementoCorrente( caminho_final , 1 ) ;
-    				LIS_ObterValor ( caminho_final , ( ppVoid ) &aux2 ) ;
+                LIS_ObterValor ( caminho_final , ( ppVoid ) &aux2 ) ;
+                if ( aux2->conteudo == pPeca )
+                    return 1 ;
+                retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , 1 ) ;
 
-    			}
+            } while ( retorno_lis != LIS_CondRetFimLista ) ;
+        }
 
-    			if ( aux2->conteudo == pPeca )
-    				return 1 ;
+        LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
+        LST_ObterValor ( pTabuleiro->casas , (ppVoid) &aux ) ;
 
-    			return 0 ;
+    } while ( aux != casa ) ;
 
-    		}
-    		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-    		LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &aux ) ;
-    	} while ( aux != casa ) ;
-
-    }
     return 0 ;
+   
 }
  
 static void LiberarCasa ( TAB_Casa *pCasa ) 
