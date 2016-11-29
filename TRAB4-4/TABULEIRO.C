@@ -185,6 +185,11 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
 
     LIS_tpCondRet retorno_lis ;
 
+    if ( pPeca == NULL ) 
+    {
+        return TAB_CondRetPecaNaoExiste ;
+    }
+
     if ( n <= 0 || n > 6 )
     {
         return TAB_CondRetMovimentoInvalido ;
