@@ -1,0 +1,6 @@
+/OUT:TRAB2-4.exe
+/INCREMENTAL:NO
+/MACHINE:IX86
+testtab.obj  tabuleiro.obj  
+ArcaboucoTeste.lib
+

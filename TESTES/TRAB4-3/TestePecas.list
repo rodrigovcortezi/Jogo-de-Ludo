@@ -1,0 +1,143 @@
+GERADOR DE SCRIPT DE DIRETIVAS PARA MAKE
+   LES / Informática / PUC-Rio    Versão 6.00 (c) 2005
+
+Composição do construto: TestePecas.comp
+
+   Nome do Construto:           TestePecas
+   Diretório base:              C:\Users\c1510848\Downloads\INF1301 - TRAB2 - LRDCRC\TRAB2-3
+
+   Arquivo composição:          TestePecas.comp
+   Arquivo plataforma:          gmake.parm
+
+   Arquivo diretivas MAKE:      TestePecas.make
+   Arquivo diretivas LINK:      TestePecas.build
+   Arquivo listagem:            TestePecas.list
+
+Módulos do construto: TestePecas.comp
+
+   testpec.c
+   pecas.c
+
+Estatísticas do construto
+
+   Estatísticas do arquivo: generico.h
+      Total linhas:             588
+      Linhas de código:          54
+      Linhas de comentário:     470
+      Linhas em branco:          64
+   Arquivos de inclusão de que necessita
+      tst_espc.h
+   Arquivos em que é incluído
+      testpec.c
+
+   Estatísticas do arquivo: lerparm.h
+      Total linhas:             463
+      Linhas de código:          36
+      Linhas de comentário:     362
+      Linhas em branco:          65
+   Arquivos em que é incluído
+      testpec.c
+
+   Estatísticas do arquivo: pecas.c
+      Total linhas:             135
+      Linhas de código:          58
+      Linhas de comentário:      47
+      Linhas em branco:          34
+   Arquivos de inclusão de que necessita
+      pecas.h
+
+   Estatísticas do arquivo: pecas.h
+      Total linhas:             223
+      Linhas de código:          23
+      Linhas de comentário:     167
+      Linhas em branco:          33
+   Arquivos em que é incluído
+      pecas.c
+      testpec.c
+
+   Estatísticas do arquivo: testpec.c
+      Total linhas:             145
+      Linhas de código:          68
+      Linhas de comentário:      43
+      Linhas em branco:          40
+   Arquivos de inclusão de que necessita
+      generico.h
+      lerparm.h
+      pecas.h
+      tst_espc.h
+
+   Estatísticas do arquivo: tst_espc.h
+      Total linhas:             320
+      Linhas de código:          23
+      Linhas de comentário:     277
+      Linhas em branco:          20
+   Arquivos em que é incluído
+      generico.h
+      testpec.c
+
+Totais por tipo de arquivo
+
+  Tipo: inc      Path: .
+         Total linhas do tipo:         0
+         Linhas de código:             0
+         Linhas de comentário:         0
+         Linhas em branco:             0
+         Arquivos deste tipo:          0
+
+  Tipo: tab      Path: .
+         Total linhas do tipo:         0
+         Linhas de código:             0
+         Linhas de comentário:         0
+         Linhas em branco:             0
+         Arquivos deste tipo:          0
+
+  Tipo: def      Path: .
+         Total linhas do tipo:         0
+         Linhas de código:             0
+         Linhas de comentário:         0
+         Linhas em branco:             0
+         Arquivos deste tipo:          0
+
+  Tipo: h        Path: .
+         Total linhas do tipo:      1594
+         Linhas de código:           136
+         Linhas de comentário:      1276
+         Linhas em branco:           182
+         Arquivos deste tipo:          4
+
+  Tipo: obj      Path: .
+         Total linhas do tipo:         0
+         Linhas de código:             0
+         Linhas de comentário:         0
+         Linhas em branco:             0
+         Arquivos deste tipo:          0
+
+  Tipo: err      Path: .
+         Total linhas do tipo:         0
+         Linhas de código:             0
+         Linhas de comentário:         0
+         Linhas em branco:             0
+         Arquivos deste tipo:          0
+
+  Tipo: DEFAULT  Path: .
+         Total linhas do tipo:         0
+         Linhas de código:             0
+         Linhas de comentário:         0
+         Linhas em branco:             0
+         Arquivos deste tipo:          0
+
+  Tipo: c        Path: .
+         Total linhas do tipo:       280
+         Linhas de código:           126
+         Linhas de comentário:        90
+         Linhas em branco:            74
+         Arquivos deste tipo:          2
+
+Totais para todo o construto TestePecas
+
+   Total linhas:              1874
+   Linhas de código:           262
+   Linhas de comentário:      1366
+   Linhas em branco:           256
+   Arquivos processados:         6
+
