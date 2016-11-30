@@ -20,5 +20,9 @@ typedef enum {
 typedef struct jogo * JOGO_tpLudo ;
 
 
-JOGO_CondRet JOGO_InicializaJogo ( JOGO_tpLudo * pJogo ) ;		
+JOGO_CondRet JOGO_InicializaJogo ( JOGO_tpLudo * pJogo , int num , int *cor ) ;
+
+JOGO_CondRet JOGO_RealizaJogada ( JOGO_tpLudo pJogo , int cor ) ;
+
+//JOGO_CondRet JOGO_VerificaGanhador ( JOGO_tpLudo pJogo , int *cond ) ;		
 
