@@ -35,7 +35,7 @@ typedef struct Peca {
 	    /* Cor definida entre 0 e 3 */
 
 	int final;
-	    /* Se a peça está na casa final do jogo (1) ou não (0) */
+	    /* Se a peça está na reta final do jogo (1) ou não (0) */
 
 	char status ;
         /* Se a peça está dentro do jogo 'D' ou fora de jogo 'F' */
@@ -51,6 +51,11 @@ typedef struct Peca {
 
 PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int ind, int cor ) 
 {
+	if ( cor < 0 || cor > 3 )
+	{
+		return PEC_CondRetCorInvalida ;
+	}
+
 	if(pPeca[ind]!=NULL)
 	{
 		return PEC_CondRetJaExiste;
@@ -63,10 +68,7 @@ PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int ind, int cor )
 		return PEC_CondRetFaltaMemoria ;
 	}
 
-	if ( cor < 0 || cor > 3 )
-	{
-		return PEC_CondRetCorInvalida ;
-	}
+	
 
 	pPeca[ind]->cor    = cor ;
 	pPeca[ind]->final  = 0   ;
@@ -81,14 +83,12 @@ PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int ind, int cor )
 *  Função: PEC  &Destroi Peca
 *  ****/
 
-PEC_CondRet PEC_DestroiPeca ( PEC_Peca * pPeca )
+PEC_CondRet PEC_DestroiPeca ( PEC_Peca *pPeca )
 {
-	if( pPeca != NULL )
-	{
-	  free(pPeca);
-	}
-	else
-	    return PEC_CondRetNaoExiste;
+	if ( pPeca == NULL )
+		return PEC_CondRetNaoExiste ;
+	
+	free( pPeca );
 
 	return PEC_CondRetOK ;
 
@@ -97,11 +97,10 @@ PEC_CondRet PEC_DestroiPeca ( PEC_Peca * pPeca )
 
 /***************************************************************************
 *
-*  Função: PEC  &Obtem Informações
+*  Função: PEC  &Obtem cor
 *  ****/
 
-PEC_CondRet PEC_ObtemInfo ( PEC_Peca * pPeca , int * cor, 
-	                              int * final, char * status)
+PEC_CondRet PEC_ObtemCor ( PEC_Peca * pPeca , int * cor )
 {
 	if(pPeca==NULL)
 	{
@@ -109,12 +108,48 @@ PEC_CondRet PEC_ObtemInfo ( PEC_Peca * pPeca , int * cor,
 	}
 
 	* cor    = pPeca->cor    ;
+
+	return PEC_CondRetOK ;
+
+} /* Fim função: PEC  &Obtem cor */
+
+
+/***************************************************************************
+*
+*  Função: PEC  &Obtem final
+*  ****/
+
+PEC_CondRet PEC_ObtemFinal ( PEC_Peca * pPeca , int * final )
+{
+	if(pPeca==NULL)
+	{
+		return PEC_CondRetNaoExiste;
+	}
+
 	* final  = pPeca->final  ;
+
+	return PEC_CondRetOK ;
+
+} /* Fim função: PEC  &Obtem final */
+
+
+/***************************************************************************
+*
+*  Função: PEC  &Obtem status
+*  ****/
+
+PEC_CondRet PEC_ObtemStatus ( PEC_Peca * pPeca , char * status)
+{
+	if(pPeca==NULL)
+	{
+		return PEC_CondRetNaoExiste;
+	}
+
 	* status = pPeca->status ;
 
 	return PEC_CondRetOK ;
 
-} /* Fim função: PEC  &Obtem Informações */
+} /* Fim função: PEC  &Obtem status */
 
 
 /***************************************************************************
