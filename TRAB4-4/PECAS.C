@@ -35,7 +35,7 @@ typedef struct Peca {
 	    /* Cor definida entre 0 e 3 */
 
 	int final;
-	    /* Se a peça está na reta final do jogo (1) ou não (0) */
+	    /* Se a peça está na casa final do jogo (1) ou não (0) */
 
 	char status ;
         /* Se a peça está dentro do jogo 'D' ou fora de jogo 'F' */

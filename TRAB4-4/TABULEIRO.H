@@ -60,6 +60,9 @@
 
 		      TAB_CondRetFaltouMemoria, 
 	       		          /* Faltou Memoria */
+
+          TAB_CondRetPecaNaoExiste,
+                      /* Peça não criada */
 			   
         	TAB_CondRetPecaMorta,
               		    /* Peça fora de jogo */
