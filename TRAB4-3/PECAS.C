@@ -100,11 +100,10 @@ PEC_CondRet PEC_DestroiPeca ( PEC_Peca ** pPeca, int ind  )
 
 /***************************************************************************
 *
-*  Função: PEC  &Obtem Informações
+*  Função: PEC  &Obtem cor
 *  ****/
 
-PEC_CondRet PEC_ObtemInfo ( PEC_Peca * pPeca , int * cor, 
-	                              int * final, char * status)
+PEC_CondRet PEC_ObtemCor ( PEC_Peca * pPeca , int * cor )
 {
 	if(pPeca==NULL)
 	{
@@ -112,12 +111,48 @@ PEC_CondRet PEC_ObtemInfo ( PEC_Peca * pPeca , int * cor,
 	}
 
 	* cor    = pPeca->cor    ;
+
+	return PEC_CondRetOK ;
+
+} /* Fim função: PEC  &Obtem cor */
+
+
+/***************************************************************************
+*
+*  Função: PEC  &Obtem final
+*  ****/
+
+PEC_CondRet PEC_ObtemFinal ( PEC_Peca * pPeca , int * final )
+{
+	if(pPeca==NULL)
+	{
+		return PEC_CondRetNaoExiste;
+	}
+
 	* final  = pPeca->final  ;
+
+	return PEC_CondRetOK ;
+
+} /* Fim função: PEC  &Obtem final */
+
+
+/***************************************************************************
+*
+*  Função: PEC  &Obtem status
+*  ****/
+
+PEC_CondRet PEC_ObtemStatus ( PEC_Peca * pPeca , char * status)
+{
+	if(pPeca==NULL)
+	{
+		return PEC_CondRetNaoExiste;
+	}
+
 	* status = pPeca->status ;
 
 	return PEC_CondRetOK ;
 
-} /* Fim função: PEC  &Obtem Informações */
+} /* Fim função: PEC  &Obtem status */
 
 
 /***************************************************************************
