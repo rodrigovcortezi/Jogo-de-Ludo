@@ -185,17 +185,19 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
 
     LIS_tpCondRet retorno_lis ;
 
-    if ( pPeca == NULL ) 
-    {
-        return TAB_CondRetPecaNaoExiste ;
-    }
+    PEC_CondRet retorno_pec ;
 
     if ( n <= 0 || n > 6 )
     {
         return TAB_CondRetMovimentoInvalido ;
     }
 
-    PEC_ObtemInfo ( pPeca , &cor, &final, &status ) ;
+    retorno_pec = PEC_ObtemCor ( pPeca , &cor ) ;
+    if ( retorno_pec != PEC_CondRetOK )
+        return TAB_CondRetPecaNaoExiste ;
+    
+    PEC_ObtemFinal ( pPeca , &final ) ;
+    PEC_ObtemStatus ( pPeca , &status ) ;
  
     if ( status == 'F' )
     {
@@ -285,20 +287,23 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
 TAB_CondRet TAB_InserePecaInicio ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 {
      
-    int cor, final , cor2, final2 ;
+    int cor, cor2 ;
  
     char status , status2 ;
  
     TAB_Casa *casa ;
+
+    PEC_CondRet retorno_pec ;
  
-    PEC_ObtemInfo ( pPeca , &cor, &final, &status ) ;
+    retorno_pec = PEC_ObtemStatus ( pPeca , &status ) ;
+    if ( retorno_pec != PEC_CondRetOK )
+        return TAB_CondRetPecaNaoExiste ;
 
     if ( status == 'D' )
     {
         return TAB_CondRetMovimentoInvalido ;
     }
- 
-     
+    PEC_ObtemCor ( pPeca , &cor ) ; 
     LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
  
     while ( casa->cor != cor ){
@@ -313,7 +318,7 @@ TAB_CondRet TAB_InserePecaInicio ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pP
     
     if ( casa->conteudo != NULL ){
     
-        PEC_ObtemInfo ( casa->conteudo , &cor2, &final2, &status2 ) ;
+        PEC_ObtemCor ( casa->conteudo , &cor2 ) ;
         if ( cor2 == cor )
         {
             return TAB_CondRetMovimentoInvalido ;
@@ -321,7 +326,7 @@ TAB_CondRet TAB_InserePecaInicio ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pP
         PEC_AtualizaPeca ( casa->conteudo, 0, 'F' ) ;
     }
 
-    PEC_AtualizaPeca ( pPeca , final , 'D' ) ;
+    PEC_AtualizaPeca ( pPeca , 0 , 'D' ) ;
  
     casa->conteudo = pPeca ;
  
@@ -394,10 +399,9 @@ static int ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )			//
     TAB_Casa *casa, *aux, *aux2 ;
     LIS_tppLista caminho_final ;
     LIS_tpCondRet retorno_lis ;
-    int cor, final ; 
-    char status ;
+    int cor ;
       
-    PEC_ObtemInfo ( pPeca , &cor, &final, &status ) ;
+    PEC_ObtemCor ( pPeca , &cor ) ;
 
     LST_ObterValor ( pTabuleiro->casas , (ppVoid) &casa ) ;
     aux = casa ;
