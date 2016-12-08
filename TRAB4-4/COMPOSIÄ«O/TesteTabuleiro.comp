@@ -12,11 +12,14 @@ def         =  .
 tab         =  .
 inc         =  .
 [Modulos]
+LISTA
+LCIRC
+PECAS
 TESTTAB
 TABULEIRO
 
 [BuildInicio]
-/OUT:TRAB2-4.exe
+/OUT:TRAB4-4.exe
 /INCREMENTAL:NO
 /MACHINE:IX86
 
