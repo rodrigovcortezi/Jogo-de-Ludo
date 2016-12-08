@@ -226,7 +226,6 @@ LIS_tpCondRet LIS_InserirElementoApos( LIS_tppLista pLista ,
 #ifdef _DEBUG
    assert( pLista != NULL ) ;
 #endif
-
    /* Criar elemento a inerir após */
 
    pElem = CriarElemento( pLista , pValor ) ;

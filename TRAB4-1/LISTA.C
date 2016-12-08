@@ -16,7 +16,7 @@
 #include   <stdio.h>
 #include   <string.h>
 #include   <memory.h>
-#include   <malloc.h>
+#include   <stdlib.h>
 #include   <assert.h>
 
 #define LISTA_OWN
@@ -226,7 +226,6 @@ LIS_tpCondRet LIS_InserirElementoApos( LIS_tppLista pLista ,
 #ifdef _DEBUG
    assert( pLista != NULL ) ;
 #endif
-
    /* Criar elemento a inerir após */
 
    pElem = CriarElemento( pLista , pValor ) ;

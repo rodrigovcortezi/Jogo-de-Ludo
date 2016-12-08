@@ -144,14 +144,14 @@ PEC_CondRet PEC_CriaPeca ( PEC_tpPeca * pPeca, int ind, int cor ) ;
 ***********************************************************************/
 
 /* Assertivas de Entrada PEC_DestroiPeca
-*  Existir peça ja criada (para todo pPeca , pPeca != NULL)
+*  Existir peça ja criada (para todo pPeca[ind], pPeca[ind] != NULL)
 *
 *  Fim Assertiva de Entrada PEC_DestroiPeca */
 
 PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca pPeca ) ;
  
 /* Assertiva de Saida PEC_DestroiPeca
-*  A peca deve ser destruida (para todo pPeca , pPeca = NULL)
+*  A peca deve ser destruida (para todo pPeca[ind], pPeca[ind] = NULL)
 *  A memoria alocada para peca deve ser liberada 
 *  A funcao retorna um PEC_CondRet
 *
@@ -159,14 +159,16 @@ PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca pPeca ) ;
 
 /***********************************************************************
 *
-*  $FC Função: PEC  &Obtem cor
+*  $FC Função: PEC  &Obtem Informações
 *
 *  $ED Descrição da função
-*     Dada uma peça no vetor, informa sua cor.
+*     Dada uma peça no vetor, informa seus dados.
 *
 *  $EP Parametros
 *   pPeca - peça que procura saber a cor
 *  * cor - ponteiro passado para receber a cor
+*  * final - ponteiro passado para saber se peça está no estágio final
+*  * status - ponteiro passado para saber se peça está em jogo
 *
 *  $FV Valor retornado
 *     PEC_CondRetOK - se ocorreu tudo certo
@@ -174,78 +176,23 @@ PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca pPeca ) ;
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_ObtemCor
+/* Assertivas de Entrada PEC_ObtemInfo
 *  Deve existir uma cor valida na peca (para todo pPeca, pPeca->cor entre 0 e 3)
-*
-*  Fim Assertiva de Entrada PEC_ObtemCor */
-
-PEC_CondRet PEC_ObtemCor ( PEC_tpPeca pPeca , int * cor ) ;
-
-/*  Assertiva de Saida PEC_ObtemCor
-*   Deverá ser retornado uma cor válida (inteiro entre 0 e 3)
-*   A funcao retorna um PEC_CondRet
-*
-*   Fim Assertiva de Saida PEC_ObtemCor */
-
-/***********************************************************************
-*
-*  $FC Função: PEC  &Obtem final
-*
-*  $ED Descrição da função
-*     Dada uma peça no vetor, informa se está na casa final.
-*
-*  $EP Parametros
-*   pPeca - peça que procura saber o final
-*  * final - ponteiro passado para receber o final
-*
-*  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetNaoExiste - se peca nao existe
-*
-***********************************************************************/
-
-/* Assertivas de Entrada PEC_ObtemFinal
+*  Deve existir um status valido na peca
 *  Deve existir um valor final valido na peca
 *
-*  Fim Assertiva de Entrada PEC_ObtemFinal */
+*  Fim Assertiva de Entrada PEC_ObtemInfo */
 
-PEC_CondRet PEC_ObtemFinal ( PEC_tpPeca pPeca , int * final ) ;
+PEC_CondRet PEC_ObtemInfo ( PEC_tpPeca pPeca , int * cor, 
+	                              int * final, char * status ) ;
 
-/*  Assertiva de Saida PEC_ObtemFinal
+/*  Assertiva de Saida PEC_ObtemInfo
+*   Deverá ser retornado uma cor válida (inteiro entre 0 e 3)
+*   Deverá ser retornado um status válido (caracter 'D' ou 'F')
 *   Deverá ser retornado um final válido (inteiro 1 ou 0)
 *   A funcao retorna um PEC_CondRet
 *
-*   Fim Assertiva de Saida PEC_ObtemFinal */
-
-/***********************************************************************
-*
-*  $FC Função: PEC  &Obtem status
-*
-*  $ED Descrição da função
-*     Dada uma peça no vetor, informa seu status.
-*
-*  $EP Parametros
-*   pPeca - peça que procura saber o status
-*  * status - ponteiro passado para receber o status
-*
-*  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetNaoExiste - se peca nao existe
-*
-***********************************************************************/
-
-/* Assertivas de Entrada PEC_ObtemStatus
-*  Deve existir um status valido na peca
-*
-*  Fim Assertiva de Entrada PEC_ObtemStatus */
-
-PEC_CondRet PEC_ObtemStatus ( PEC_tpPeca pPeca , char * status ) ;
-
-/*  Assertiva de Saida PEC_ObtemStatus
-*   Deverá ser retornado um status válido (caracter 'D' ou 'F')
-*   A funcao retorna um PEC_CondRet
-*
-*   Fim Assertiva de Saida PEC_ObtemStatus */
+*   Fim Assertiva de Saida PEC_ObtemInfo */
 
 /***********************************************************************
 *

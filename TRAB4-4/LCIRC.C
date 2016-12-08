@@ -12,10 +12,10 @@
  *  $HA Histórico de evolução:
  *    Versão |  Autor  |      Data     |    Observações
  *      5    |   rvc   |  14/out/2016  |  finalização desenvolvimento
- *		4    |   rvc   |  14/out/2016  |  ajustes de desenvolvimento
+ *      4    |   rvc   |  14/out/2016  |  ajustes de desenvolvimento
  *      3    |   lr    |  25/set/2016  |  formalização do módulo
- *		2    |   rvc   |  24/set/2016  |  ajustes de desenvolvimento
- *	    1    |   dcr   |  17/set/2016  |  início desenvolvimento
+ *      2    |   rvc   |  24/set/2016  |  ajustes de desenvolvimento
+ *      1    |   dcr   |  17/set/2016  |  início desenvolvimento
  *
  ***************************************************************************/
 
@@ -61,7 +61,7 @@ typedef struct LST_tpCircular {
       /* Ponteiro para o elemento corrente */
     
     int numElem ;
- 	  /* Numero de elementos da lista */
+      /* Numero de elementos da lista */
     
     void ( * ExcluirValor ) ( void * pValor ) ;
       /* Ponteiro para a função de destruição do valor contido em um elemento */
@@ -96,7 +96,7 @@ LST_CondRet LST_CriaLista ( LST_tppCircular **pLista, void ( * ExcluirValor ) ( 
     LimparCabeca ( *pLista ) ;
     (*pLista)->ExcluirValor = ExcluirValor ;
     
-    return 	LST_CondRetOK ;
+    return  LST_CondRetOK ;
     
 } /* Fim função: LST  &Criar lista */
 
@@ -364,7 +364,7 @@ void LiberarElemento ( LST_tppCircular *pLista , LST_Elem  * pElem )
         pLista->ExcluirValor( pElem->valor ) ;
     } /* if */
     
-	pElem->valor = NULL ;
+    pElem->valor = NULL ;
 
     pLista->numElem-- ;
     
