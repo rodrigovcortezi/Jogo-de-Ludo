@@ -1,2 +1,2 @@
-TRAB2-3 /sTestePecas /lsaida
+TRAB4-3 /sTestePecas /lsaida
 pause

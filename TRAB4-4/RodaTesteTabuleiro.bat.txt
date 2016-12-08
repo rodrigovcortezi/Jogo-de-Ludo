@@ -1,2 +1,2 @@
-TRAB2-4 /sTesteTabuleiro /lsaida
+TRAB4-4 /sTesteTabuleiro /lsaida
 pause

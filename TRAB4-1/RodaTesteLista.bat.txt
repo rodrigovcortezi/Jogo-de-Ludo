@@ -1,2 +1,2 @@
-TRAB2-1 /sTesteLista.script /lsaida
+TRAB4-1 /sTesteLista.script /lsaida
 pause
