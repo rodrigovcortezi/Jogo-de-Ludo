@@ -13,6 +13,10 @@ tab         =  .
 inc         =  .
 
 [Modulos]
+LISTA
+LCIRC
+PECAS
+TABULEIRO
 TESTJOGO
 JOGO
 
