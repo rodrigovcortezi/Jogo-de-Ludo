@@ -1,0 +1,52 @@
+==============================================================
+TRABALHO 4 - JOGO DE LUDO - LEIA-ME.TXT -  Arcabouço de Teste
+==============================================================
+
+Desenvolvido por:
+
+- Lucas Rodrigues - 1510848
+- Daniel Cunha Rios - 1512920
+- Rodrigo V. Cortezi - 1511425
+
+
+Esse arquivo de texto descreve o conteúdo de INF1301-TRAB04-LRDCRC a ser implementado e testado no arcabouço. 
+
+Utilização do programa: 
+
+1)
+
+-Entre na pasta INF1301-TRAB04-LRDCRC.
+
+	- Caso queira testar o modulo lista:
+		- Selecione a pasta TRAB4-1
+		- TRAB4-1.exe foi rebatizado para TRAB4-1.exe.txt
+		- Execute o arquivo RodaTesteLista.bat, ele irá gerar o arquivo saida.log com os resultados do teste
+		    feito atraves da execucao do TesteLista.script.
+
+	- Caso queira testar o modulo lista circular:
+		- Selecione a pasta TRAB4-2
+		- TRAB4-2.exe foi rebatizado para TRAB4-2.exe.txt
+		- Execute o arquivo RodaTesteListaCirc.bat, ele irá gerar o arquivo saida.log com os resultados do teste
+		    feito atraves da execucao do TesteListaC.script.
+
+	- Caso queira testar o modulo peca:
+	    - Selecione a pasta TRAB4-3
+		- TRAB4-3.exe foi rebatizado para TRAB4-3.exe.txt
+  		- Execute o arquivo RodaTestePeca.bat, ele irá gerar o arquivo saida.log com os resultados do teste
+   		    feito atraves da execucao do TestePeca.script.
+
+	- Caso queira testar o modulo tabuleiro:
+  		- Selecione a pasta TRAB4-4
+		- TRAB4-4.exe foi rebatizado para TRAB4-4.exe.txt
+ 	    - Execute o arquivo RodaTesteTabuleiro.bat, ele irá gerar o arquivo saida.log com os resultados do teste
+   		    feito atraves da execucao do TesteTabuleiro.script.
+
+    - Caso queira testar o modulo jogo (aplicação do Jogo de Ludo):
+  		- Selecione a pasta TRAB4-5
+		- TRAB4-5.exe foi rebatizado para TRAB4-5.exe.txt
+ 	    - Execute o arquivo RodaTesteTabuleiro.bat, ele irá gerar o arquivo saida.log com os resultados do teste
+   		    feito atraves da execucao do TesteTabuleiro.script.
+
+===========================================================================
+-----------------------FIM DO ARQUIVO LEIAME.TXT---------------------------
+===========================================================================
