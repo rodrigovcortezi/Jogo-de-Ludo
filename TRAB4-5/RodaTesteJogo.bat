@@ -1,2 +1,2 @@
-TRAB5-4 /sTesteJogo /lsaida
+TRAB4-5 /sTesteJogo /lsaida
 pause
