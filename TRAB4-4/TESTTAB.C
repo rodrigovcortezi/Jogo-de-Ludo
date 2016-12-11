@@ -33,6 +33,8 @@ static const char DESTRUIR_TAB_CMD            [ ] = "=destruirtab"     ;
 
 #define MAX_PECAS 15 //USADO PARA VETOR DE PECAS
 
+#define MAX_TABULEIRO 10 //USADO PARA VETOR DE PECAS
+
 /***********************************************************************
 *
 *  $FC Função: TTAB &Testar tabuleiro
@@ -50,6 +52,8 @@ static const char DESTRUIR_TAB_CMD            [ ] = "=destruirtab"     ;
 *
 ***********************************************************************/
 
+TAB_tpLudo vtTabuleiro[MAX_TABULEIRO]; //DECLARACAO DO VETOR DE TABULEIRO
+
 PEC_tpPeca vtPecas[MAX_PECAS]; //DECLARAÇAO DO VETOR DE PECAS
 
 /***********************************************************************/
@@ -63,13 +67,13 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 	int CondRetObtido =-1 ;
 	int numLidos      =-1 ;
 	int indPeca       =-1 ;
-	int * valor           ;
+	int valor             ;
 	int i                 ;
 
 	for(i=0;i<16;i++)
 	{
 		ret = PEC_CriaPeca ( vtPecas, i, i/4 ) ;
-		if ( ret != 0)
+		if ( ret != PEC_CondRetOK )
 			break;
 	}
 
@@ -85,7 +89,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 			return TST_CondRetParm;
 		}
 
-		CondRetObtido = TAB_CriaTabuleiro_Ludo ( &tab ) ;
+		CondRetObtido = TAB_CriaTabuleiro_Ludo ( &vtTabuleiro [tab] ) ;
 
 		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao criar tabuleiro") ;
 
@@ -103,7 +107,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 			return TST_CondRetParm;
 		}
 
-		CondRetObtido = TAB_MovePeca ( &tab, vtPecas [indPeca], &qtdMov ) ;
+		CondRetObtido = TAB_MovePeca ( vtTabuleiro [tab], vtPecas [indPeca], qtdMov ) ;
 
 		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao mover peça") ;
 
@@ -121,7 +125,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 			return TST_CondRetParm;
 		}
 
-		CondRetObtido = TAB_InserePecaInicio ( &tab, vtPecas [indPeca] ) ;
+		CondRetObtido = TAB_InserePecaInicio ( vtTabuleiro [tab], vtPecas [indPeca] ) ;
 
 		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Inserir peça no inicio") ;
 
@@ -139,7 +143,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 			return TST_CondRetParm;
 		}
 
-		CondRetObtido = TAB_LancaDado ( valor ) ;
+		CondRetObtido = TAB_LancaDado ( &valor ) ;
 
 		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Lançar o dado") ;
 
@@ -157,7 +161,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 			return TST_CondRetParm;
 		}
 
-		CondRetObtido = TAB_DestruirTabuleiro ( &tab ) ;
+		CondRetObtido = TAB_DestruirTabuleiro ( vtTabuleiro [tab] ) ;
 
 		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Destruir tabuleiro") ;
 
