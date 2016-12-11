@@ -85,7 +85,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 			return TST_CondRetParm;
 		}
 
-		CondRetObtido = TAB_CriarTabuleiro_Ludo ( &tab ) ;
+		CondRetObtido = TAB_CriaTabuleiro_Ludo ( &tab ) ;
 
 		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao criar tabuleiro") ;
 
