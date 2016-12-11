@@ -109,19 +109,19 @@ typedef enum {
  *                     exclusão do valor referenciado pelo elemento
  *                     a ser excluído.
  *                     Ver descrição do módulo.
- *     ptrLIS        - ponteiro para tipo LIS_tppLista, se executou
+ *     pLista        - ponteiro para tipo LIS_tppLista, se executou
  *                     com sucesso o ponteiro referencia a cabeça da
  *                     lista.
  *
  *  $FV Valor retornado
  *     LIS_CondRetOK - Lista criada com sucesso
  *     LIS_CondRetFaltouMemoria - malloc acusou falta de memória
- *     LIS_CondRetListaJaExiste - ptrLIS não referencia NULL.
+ *     LIS_CondRetListaJaExiste - pLista não referencia NULL.
  *
  ***********************************************************************/
 
 LIS_tpCondRet LIS_CriarLista(
-      void   ( * ExcluirValor ) ( void * pDado ), LIS_tppLista * ptrLIS ) ;
+      void   ( * ExcluirValor ) ( void * pDado ), LIS_tppLista * pLista ) ;
 
 
 /***********************************************************************
@@ -137,7 +137,7 @@ LIS_tpCondRet LIS_CriarLista(
  *
  *  $FV Valor retornado
  *     LIS_CondRetOK    - destruiu sem problemas
- *     LIS_CondRetListaNaoExiste - ptrLIS referencia NULL
+ *     LIS_CondRetListaNaoExiste - pLista referencia NULL
  *
  ***********************************************************************/
 

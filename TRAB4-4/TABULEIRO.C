@@ -345,7 +345,7 @@ TAB_CondRet TAB_LancaDado ( int * pValor )
   
     int ValorAleatorio ;
   
-    srand ( (unsigned) time ( NULL ) ) ;
+    srand ( time ( NULL ) ) ;
     ValorAleatorio = ( rand() % 6 ) + 1 ;
       
     * pValor = ValorAleatorio ;

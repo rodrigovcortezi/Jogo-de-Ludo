@@ -221,7 +221,7 @@ LST_CondRet LST_EsvaziarLista ( LST_Circular pLista ) ;
  *
  *  Fim Assertivas de Entrada LST_BuscaElemento */
 
-LST_CondRet LST_BuscaElemento ( LST_Circular pLista , void * valor ) ;	
+LST_CondRet LST_BuscaElemento ( LST_Circular pLista , void * valor ) ;
 
 /*  Assertiva de Saida LST_BuscaElemento
  *   A funcao retorna um LST_CondRet
