@@ -38,6 +38,8 @@
 *
 *     =criarpeca                         IndPeca Cor CondRetEsp
 *     =destruirpeca                      IndPeca CondRetEsp
+*     =obtercor                          IndPeca CondRetEsp
+*     =obterfinal                        IndPeca CondRetEsp
 *     =obterstatus                       IndPeca CondRetEsp
 *	  =atualizapeca   					 IndPeca Final Status CondRetEsp
 *
@@ -45,6 +47,8 @@
 
 static const char CRIAR_PECA_CMD          [ ] = "=criarpeca"     ;
 static const char DESTRUIR_PECA_CMD       [ ] = "=destruirpeca"  ;
+static const char OBTER_COR_CMD           [ ] = "=obtercor"      ;
+static const char OBTER_FINAL_CMD         [ ] = "=obterfinal"    ;
 static const char OBTER_STATUS_CMD        [ ] = "=obterstatus"   ;
 static const char ATUALIZAR_PECA_CMD      [ ] = "=atualizapeca"  ;
 
@@ -104,7 +108,47 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 
 	}  /* fim ativa: Testar */
 
-		/* Testar Obter Status */
+		/* Testar Obter Cor */
+
+         else if ( strcmp( ComandoTeste , OBTER_COR_CMD ) == 0 )
+         {
+
+            numLidos = LER_LerParametros( "ii", &indPeca, &CondRetEsp ) ;
+
+            if (  numLidos != 2 )
+            {
+               return TST_CondRetParm ;
+            }
+
+
+            CondRetObtido = PEC_ObtemCor( vtPecas[indPeca], &cor ) ;
+			
+            return TST_CompararInt( CondRetEsp , CondRetObtido ,
+                     "Condicao de retorno errada ao obter status." ) ;
+
+         } /* fim ativa: Testar Obter Cor */
+
+    /* Testar Obter Final */
+
+         else if ( strcmp( ComandoTeste , OBTER_FINAL_CMD ) == 0 )
+         {
+
+            numLidos = LER_LerParametros( "ii", &indPeca, &CondRetEsp ) ;
+
+            if (  numLidos != 2 )
+            {
+               return TST_CondRetParm ;
+            }
+
+
+            CondRetObtido = PEC_ObtemFinal( vtPecas[indPeca], &final ) ;
+			
+            return TST_CompararInt( CondRetEsp , CondRetObtido ,
+                     "Condicao de retorno errada ao obter status." ) ;
+
+         } /* fim ativa: Testar Obter Final */
+
+     /* Testar Obter Status */
 
          else if ( strcmp( ComandoTeste , OBTER_STATUS_CMD ) == 0 )
          {
@@ -117,7 +161,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             }
 
 
-            CondRetObtido = PEC_ObtemInfo( vtPecas[indPeca], &cor, &final, &status ) ;
+            CondRetObtido = PEC_ObtemStatus( vtPecas[indPeca], &status ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao obter status." ) ;
