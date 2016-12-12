@@ -43,8 +43,8 @@ Utilização do programa:
 
     - Caso queira testar o modulo jogo (aplicação do Jogo de Ludo):
   		- Selecione a pasta TRAB4-5
-		- TRAB4-5.exe foi rebatizado para TRAB4-5.exe.txt
-	    	- Execute TRAB4-5.exe.
+		- JOGO.exe foi rebatizado para JOGO.exe.txt
+	    	- Execute JOGO.exe.
 	    
 ===========================================================================
 -----------------------FIM DO ARQUIVO LEIAME.TXT---------------------------
