@@ -53,6 +53,8 @@ typedef struct Jogador{
 
 static int JogarDado ( void );
 
+static void DesenhaPlacar ( PEC_tpPecas * pPecas , JOGO_Jogador * vtJogadores, int num_jogadores );
+
 static int VerificaVencedor ( PEC_tpPecas * pPecas, int num_jogadores);
 
 /*****  Código da função principal do módulo  *****/
@@ -146,8 +148,6 @@ int main (void)
     pf("\tAgora para podermos iniciar a partida, o jogador devera estar ciente das regras do jogo que estao sendo representadas\n");
     pf("na especificacao de requisitos do Software... TENHAM UM OTIMO JOGO !!!"); pf("\n\n");
 
-    // INICIO DA CRIACAO DO JOGO DE LUDO JUNTAMENTE COM OUTROS MODULOS
-
     for (i = 0 ; i < num_jogadores ; i ++) /* CRIACAO DAS PECAS */
     {
     	cor = i / 4 ;
@@ -170,28 +170,47 @@ int main (void)
 		pcor(5); pf("\n\n\tMEMORIA INSUFICIENTE PARA CRIAR TABULEIRO !!\n\n"); pcor(0);
 	}
 
-	pf("\t---------------------------------------------INICIO DO JOGO---------------------------------------------\n\n");
+	pf("\t--------------------------------------------------INICIO DO JOGO-------------------------------------------------------\n\n");
 
 	do
 	{
+		// DESENHA TABULEIRO
+		pf("\n\n\tAGORA E A VEZ DO VERMELHO !! VAMOS JOGAR O DADO . . .\n\n");
+		//JOGAR DADO E VERIFICAR NUMERO
+		//DECIDIR ACÃO COM USUARIO
 
+		//DESENHA TABULEIRO
+		pf("\n\n\tAGORA E A VEZ DO AZUL !! VAMOS JOGAR O DADO . . .\n\n");
+		//JOGAR DADO E VERIFICAR NUMERO
+		//DECIDIR ACÃO COM USUARIO
 
+		if (num_jogadores > 2)
+		{
+			//DESENHA TABULEIRO
+			pf("\n\n\tAGORA E A VEZ DO VERDE !! VAMOS JOGAR O DADO . . .\n\n");
+			//JOGAR DADO E VERIFICAR NUMERO
+			//DECIDIR ACÃO COM USUARIO
 
-
-
-
-
-
-
-
+			if(num_jogadores > 3)
+			{
+				//DESENHA TABULEIRO
+				pf("\n\n\tAGORA E A VEZ DO AMARELO !! VAMOS JOGAR O DADO . . .\n\n");
+				//JOGAR DADO E VERIFICAR NUMERO
+				//DECIDIR ACÃO COM USUARIO
+			}
+		}
 
 	} while (VerificaVencedor (vtPecas, num_jogadores) != 1);
 	
+	pf("\n\n");
+	pcor(4); pf("\t\t.----------------------------------------------.\n"); pcor(0);
+    pcor(4); pf("\t\t|                                              |\n"); pcor(0);
+    pcor(4); pf("\t\t|     PARABENS !!! TEMOS UM VENCEDOR . . .     |\n"); pcor(0);
+    pcor(4); pf("\t\t|                                              |\n"); pcor(0);
+    pcor(4); pf("\t\t.----------------------------------------------.\n"); pcor(0);
+    pf("\n\n");
 
-
-	/* MOSTAR PLACAR */
-
-
+	DesenhaPlacar( vtPecas, vtJogadores , num_jogadores );
 
     for (i = 0 ; i < num_jogadores ; i ++) /* DESTRUICAO DAS PECAS */
     {
@@ -211,6 +230,18 @@ int main (void)
 	{
 		pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
 	}
+
+	pf("\n\n");
+	pcor(2); pf("\t\t__/\\\\\\\\\\\\\\\\\\_________________________________________\n"); pcor(0);
+	pcor(2); pf("\t\t _\\/\\\\///////////___________________________________________\n"); pcor(0);
+	pcor(2); pf("\t\t  _\\/\\\\______________/\\\\___________________________________\n"); pcor(0);
+	pcor(2); pf("\t\t   _\\/\\\\\\\\\\\\_____\\///_____/\\\\\\__/\\\\\\_______________\n"); pcor(0);
+	pcor(2); pf("\t\t    _\\/\\\\///////_______/\\\\__/\\\\\\///\\\\\\///\\\\__________\n"); pcor(0);
+	pcor(2); pf("\t\t     _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); pcor(0);
+	pcor(2); pf("\t\t      _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); pcor(0);
+	pcor(2); pf("\t\t       _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); pcor(0);
+	pcor(2); pf("\t\t        _\\///______________\\///_ _\\///____\\////_____\\////________\n"); pcor(0);
+	pf("\n\n");
 
 	return 0;
 
@@ -239,14 +270,59 @@ static int JogarDado ( void )
 	return valor;
 }
 
+static void DesenhaPlacar ( PEC_tpPecas * pPecas , JOGO_Jogador * vtJogadores , int num_jogadores )
+{
+	int i, k, final, maior = 0;
+	int qtdfim[] = {0,0,0,0};
+
+	for(i = 0 ; i < num_jogadores ; i++)
+	{
+		for(k = 0 ; k < 4 ; k++)
+		{
+			PecasRetorno = PEC_ObtemFinal ( pPecas[k] , &final );
+			switch ( PecasRetorno ) 
+			{
+				case PEC_CondRetNaoExiste :
+					pcor(5); pf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(0);
+				default :
+					pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
+			}
+			if (final == 1)
+				qtdfim[i]++;
+		}
+	}
+	for (i = 0; i < 4; i++)
+	{
+		if(qtdfim[i]>qtdfim[maior])
+			maior = i;
+	}
+
+	pf("\n\n");
+	pcor(4); pf("O JOGADOR %s E O VENCEDOR DO JOGO COM '4' PONTOS !!!\n\n", vtJogadores[maior].nome ); pcor(0);
+	for (i = 0; i < 4; i++)
+	{
+		pf("JOGADOR: %s OBTEVE %d PONTOS !!\n", vtJogadores[i].nome ,qtdfim[i] );
+	}
+	pf("\n");
+}
+
 static int VerificaVencedor ( PEC_tpPecas * pPecas, int num_jogadores)
 {
 	int i, cor, numcor = 0, final, cont = 0 ;
 	PEC_CondRet PecasRetorno ;
 
-	for(i = 0 ; i < num_jogadores; i++)
+	for(i = 0 ; i < (num_jogadores*4) ; i++)
 	{
 		PecasRetorno = PEC_ObtemCor ( pPecas[i] , &cor );
+
+		switch ( PecasRetorno ) 
+		{
+			case PEC_CondRetNaoExiste :
+				pcor(5); pf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(0);
+			default :
+				pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
+		}
+
 		PecasRetorno = PEC_ObtemFinal ( pPecas[i] , &final );
 
 		switch ( PecasRetorno ) 
