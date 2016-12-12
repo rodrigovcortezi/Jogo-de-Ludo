@@ -63,6 +63,7 @@ int main (void)
 	int dado     ;
 	int cor = 0  ;
 	int resposta ;
+	int num_jogadores = 2;
 
 	JOGO_Jogador vtJogadores[4] ;
 
