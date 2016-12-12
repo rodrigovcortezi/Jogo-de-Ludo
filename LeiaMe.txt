@@ -44,9 +44,7 @@ Utilização do programa:
     - Caso queira testar o modulo jogo (aplicação do Jogo de Ludo):
   		- Selecione a pasta TRAB4-5
 		- TRAB4-5.exe foi rebatizado para TRAB4-5.exe.txt
- 	    - Execute o arquivo RodaTesteTabuleiro.bat, ele irá gerar o arquivo saida.log com os resultados do teste
-   		    feito atraves da execucao do TesteTabuleiro.script.
-	    - Caso queira jogar o Jogo de Ludo, execute o executável TRAB4-5.exe.
+	    	- Execute TRAB4-5.exe.
 	    
 ===========================================================================
 -----------------------FIM DO ARQUIVO LEIAME.TXT---------------------------
