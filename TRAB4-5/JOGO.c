@@ -272,14 +272,14 @@ static int JogarDado ( void )
 
 static void DesenhaPlacar ( PEC_tpPecas * pPecas , JOGO_Jogador * vtJogadores , int num_jogadores )
 {
-	int i, k, final, maior = 0;
+	int i, k, final, maior = 0, pos = 0;
 	int qtdfim[] = {0,0,0,0};
 
 	for(i = 0 ; i < num_jogadores ; i++)
 	{
 		for(k = 0 ; k < 4 ; k++)
 		{
-			PecasRetorno = PEC_ObtemFinal ( pPecas[k] , &final );
+			PecasRetorno = PEC_ObtemFinal ( pPecas[pos] , &final );
 			switch ( PecasRetorno ) 
 			{
 				case PEC_CondRetNaoExiste :
@@ -287,6 +287,8 @@ static void DesenhaPlacar ( PEC_tpPecas * pPecas , JOGO_Jogador * vtJogadores , 
 				default :
 					pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
 			}
+			pos++ ;
+			
 			if (final == 1)
 				qtdfim[i]++;
 		}
