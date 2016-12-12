@@ -148,7 +148,7 @@ int main (void)
     pf("\tAgora para podermos iniciar a partida, o jogador devera estar ciente das regras do jogo que estao sendo representadas\n");
     pf("na especificacao de requisitos do Software... TENHAM UM OTIMO JOGO !!!"); pf("\n\n");
 
-    for (i = 0 ; i < num_jogadores ; i ++) /* CRIACAO DAS PECAS */
+    for (i = 0 ; i < (num_jogadores*4) ; i ++) /* CRIACAO DAS PECAS */
     {
     	cor = i / 4 ;
     	PecasRetorno = PEC_Pecas (vtPecas, i, cor);
