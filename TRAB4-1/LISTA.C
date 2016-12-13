@@ -16,7 +16,7 @@
 #include   <stdio.h>
 #include   <string.h>
 #include   <memory.h>
-#include   <stdlib.h>
+#include   <malloc.h>
 #include   <assert.h>
 
 #define LISTA_OWN
