@@ -177,9 +177,9 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
  
     TAB_Casa *casa , *aux;
 
-    int cor , final , cor2, final2 , cond ;
+    int cor , final , cor2, cond ;
  
-    char status , status2 ;
+    char status ;
 
     LIS_tppLista caminho_final = NULL;
 
@@ -259,7 +259,7 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
 
     if ( aux->conteudo != NULL ) {
     
-        PEC_ObtemInfo ( aux->conteudo , &cor2, &final2, &status2 ) ;
+        PEC_ObtemCor ( aux->conteudo , &cor2 ) ;
         if ( cor2 == cor ) 
             return TAB_CondRetMovimentoInvalido ;
               
@@ -345,7 +345,7 @@ TAB_CondRet TAB_LancaDado ( int * pValor )
   
     int ValorAleatorio ;
   
-    srand ( time ( NULL ) ) ;
+    srand ( (unsigned) time ( NULL ) ) ;
     ValorAleatorio = ( rand() % 6 ) + 1 ;
       
     * pValor = ValorAleatorio ;
