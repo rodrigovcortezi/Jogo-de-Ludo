@@ -177,9 +177,9 @@ TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int 
  
     TAB_Casa *casa , *aux;
 
-    int cor , final , cor2, final2 , cond ;
+    int cor , final , cor2, cond ;
  
-    char status , status2 ;
+    char status ;
 
     LIS_tppLista caminho_final = NULL;
 
