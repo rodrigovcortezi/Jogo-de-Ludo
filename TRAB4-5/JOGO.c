@@ -22,6 +22,9 @@
 #include "PECAS.H"
 #include "TABULEIRO.H"
 
+#define MAX_JOGADORES 4
+#define MAX_PECAS 	  4
+
 #define RED     "\x1b[31m"
 #define BLUE    "\x1b[34m"
 #define GREEN   "\x1b[32m"
@@ -31,7 +34,7 @@
 
 #define ln printf("\n")
 #define pf(X) printf((X))
-#define pcor(X) pf((X)==0?(RESET):((X)==1?(BLUE):((X)==2?(RED):((X)==3?(GREEN):((X)==4?(YELLOW):(MAGENTA))))))
+#define pcor(X) pf((X)==0?(RED):((X)==1?(BLUE):((X)==2?(GREEN):((X)==3?(YELLOW):((X)==4?(RESET):(MAGENTA))))))
 
 /***********************************************************************
 *
@@ -53,195 +56,203 @@ typedef struct Jogador{
 
 static int JogarDado ( void );
 
-static void DesenhaPlacar ( PEC_tpPecas * pPecas , JOGO_Jogador * vtJogadores, int num_jogadores );
+static void DesenhaPlacar ( PEC_tpPeca * pPecas , JOGO_Jogador * vtJogadores, int num_jogadores );
 
-static int VerificaVencedor ( PEC_tpPecas * pPecas, int num_jogadores);
+static void ordenaRanking ( JOGO_Jogador *vtJogadores , int *qtdfim , int n ) ;
+
+static int VerificaVencedor ( PEC_tpPeca * pPecas, int num_jogadores, JOGO_Jogador * vtJogadores );
+
+static int ValidaMovimento ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca , int n ) ;
+
+static void RealizaMovimento ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca , int n ) ;
+
+static int ValidaInsercao ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+
+static void InserePecaJogo ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+
+static int ObtemOrdemJogador ( void ) ;
+
+static void MostraMovimentosValidos ( int *mapa ) ;
+
+static void ZeraMapa ( int *mapa ) ;
+
+static int TemMovimento ( int *mapa ) ;
 
 /*****  Código da função principal do módulo  *****/
 
 int main (void)
 {
-	int i        ;
-	int dado     ;
-	int cor = 0  ;
-	int resposta ;
-	int num_jogadores = 2;
+	const char * cores[MAX_PECAS] = { "VERMELHO" , "AZUL" , "VERDE" , "AMARELO" } ;
+	const char * ordem[MAX_JOGADORES] = { "PRIMEIRO" , "SEGUNDO" , "TERCEIRO" , "ULTIMO" } ;
+	int i , k , ind ;
+	int dado     	;
+	int opcao    	;
+	int cond     	;	
+	int cor = 0  	;
+	int resposta 	;
+	int num_jogadores = 0;
+	char status ;
 
-	JOGO_Jogador vtJogadores[4] ;
+	int valid_mapa[MAX_PECAS] ;
 
-	PEC_tpPecas vtPecas[16] ;
+	JOGO_Jogador vtJogadores[MAX_JOGADORES] ; 
+
+	PEC_tpPeca vtPecas[ MAX_JOGADORES * MAX_PECAS ] = { NULL , NULL , NULL , NULL ,
+														NULL , NULL , NULL , NULL ,
+														NULL , NULL , NULL , NULL ,
+														NULL , NULL , NULL , NULL } ;
+	PEC_tpPeca peca ;
 	TAB_tpLudo  pTabuleiro  ;
 
 	PEC_CondRet PecasRetorno     ;
 	TAB_CondRet TabuleiroRetorno ;
 
-	pf("\n\n\n");
-	pcor(2); pf("\t\t     ██╗ ██████╗  ██████╗  ██████╗     ██████╗ ███████╗    ██╗     ██╗   ██╗██████╗  ██████╗ \n"); pcor(0);
-	pcor(2); pf("\t\t     ██║██╔═══██╗██╔════╝ ██╔═══██╗    ██╔══██╗██╔════╝    ██║     ██║   ██║██╔══██╗██╔═══██╗\n"); pcor(0);
-	pcor(2); pf("\t\t     ██║██║   ██║██║  ███╗██║   ██║    ██║  ██║█████╗      ██║     ██║   ██║██║  ██║██║   ██║\n"); pcor(0);
-	pcor(2); pf("\t\t██   ██║██║   ██║██║   ██║██║   ██║    ██║  ██║██╔══╝      ██║     ██║   ██║██║  ██║██║   ██║\n"); pcor(0);
-	pcor(2); pf("\t\t╚█████╔╝╚██████╔╝╚██████╔╝╚██████╔╝    ██████╔╝███████╗    ███████╗╚██████╔╝██████╔╝╚██████╔╝\n"); pcor(0);
-	pcor(2); pf("\t\t ╚════╝  ╚═════╝  ╚═════╝  ╚═════╝     ╚═════╝ ╚══════╝    ╚══════╝ ╚═════╝ ╚═════╝  ╚═════╝ \n"); pcor(0);
-	pf("\n\n----------------------------------------------------------------------------------------------------------------------------------");
-	pf("\n\n\t"); pf("Seja bem vindo a aplicacao do Jogo de Ludo que foi desenvolvido pela equipe de desenvolvimento LRDCRC. Essa aplicacao foi\n");
-    pf("desenvolvida na universidade PUC-RIO em 2016.2 na disciplina INF1301. Antes de iniciarmos a partida, vamos definirmos os jogadores\n");
-    pf("e as suas cores...\n\n\n");
-    pf("DIGITE O NOME DO 'PRIMEIRO' JOGADOR: "); scanf(" %80[^\n]", vtJogadores[0].nome); vtJogadores[0].cor = 0;
-    pf("A COR DA SUA PECA SERA ------ "); pcor(2); pf("VERMELHA "); pcor(0); pf("------"); pf("\n\n");
-    pf("DIGITE O NOME DO 'SEGUNDO' JOGADOR: "); scanf(" %80[^\n]", vtJogadores[1].nome); vtJogadores[1].cor = 1;
-    pf("A COR DA SUA PECA SERA ------ "); pcor(1); pf("AZUL "); pcor(0); pf("------"); pf("\n\n");
-    pf(".-----------------------------------.\n");
-    pf("| 1. Caso tenha mais jogadores.     |\n");
-    pf("| 2.Caso 'NAO' tenha mais jogadores.|\n");
-    pf(".-----------------------------------.\n");
-    pf("AGORA DIGITE SUA RESPOSTA: "); scanf("%d", &resposta); pf("\n\n");
-    if(resposta < 1 || resposta > 2)
+	printf("\n\n\n");
+	pcor(0); printf("\t\t     ██╗ ██████╗  ██████╗  ██████╗     ██████╗ ███████╗    ██╗     ██╗   ██╗██████╗  ██████╗ \n"); pcor(4);
+	pcor(0); printf("\t\t     ██║██╔═══██╗██╔════╝ ██╔═══██╗    ██╔══██╗██╔════╝    ██║     ██║   ██║██╔══██╗██╔═══██╗\n"); pcor(4);
+	pcor(0); printf("\t\t     ██║██║   ██║██║  ███╗██║   ██║    ██║  ██║█████╗      ██║     ██║   ██║██║  ██║██║   ██║\n"); pcor(4);
+	pcor(0); printf("\t\t██   ██║██║   ██║██║   ██║██║   ██║    ██║  ██║██╔══╝      ██║     ██║   ██║██║  ██║██║   ██║\n"); pcor(4);
+	pcor(0); printf("\t\t╚█████╔╝╚██████╔╝╚██████╔╝╚██████╔╝    ██████╔╝███████╗    ███████╗╚██████╔╝██████╔╝╚██████╔╝\n"); pcor(4);
+	pcor(0); printf("\t\t ╚════╝  ╚═════╝  ╚═════╝  ╚═════╝     ╚═════╝ ╚══════╝    ╚══════╝ ╚═════╝ ╚═════╝  ╚═════╝ \n"); pcor(4);
+	printf("\n\n----------------------------------------------------------------------------------------------------------------------------------");
+	printf("\n\n\t"); printf("Seja bem vindo a aplicacao do Jogo de Ludo que foi desenvolvido pela equipe de desenvolvimento LRDCRC. Essa aplicacao foi\n");
+    printf("desenvolvida na universidade PUC-RIO em 2016.2 na disciplina INF1301. Antes de iniciarmos a partida, vamos definirmos os jogadores\n");
+    printf("e as suas cores...\n\n\n");
+    
+    resposta = 1 ;
+    for ( i = 0 ; resposta == 1 && i < MAX_JOGADORES ; i++ ) 
     {
-    	pcor(5); pf("\tNUMERO INVALIDO !!\n\n"); pcor(0);
-    	pf(".-----------------------------------.\n");
-    	pf("| 1. Caso tenha mais jogadores.     |\n");
-    	pf("| 2.Caso 'NAO' tenha mais jogadores.|\n");
-    	pf(".-----------------------------------.\n");
-    	pf("AGORA DIGITE SUA RESPOSTA: "); scanf("%d", &resposta); pf("\n\n");
+    	printf ( "DIGITE O NOME DO '%s' JOGADOR: " , ordem[i] ); 
+    	scanf(" %80[^\n]", vtJogadores[i].nome); 
+    	vtJogadores[i].cor = 0;
+    	printf("A COR DA SUA PECA SERA ------ "); pcor(i); printf( "%s " , cores[i] ) ; pcor(4); printf("------"); printf("\n\n");
 
-    	if(resposta < 1 || resposta > 2)
+    	for ( cor = MAX_PECAS * i ; cor < ( MAX_PECAS * i ) + MAX_PECAS ; cor++ ) 
     	{
-    		pcor(5); pf("\tNUMERO INVALIDO !! INICIAR EXECUTAVEL NOVAMENTE . . .\n\n"); pcor(0);
-    		exit(1);
+    		PecasRetorno = PEC_CriaPeca (vtPecas, cor, i) ; 
+    		switch ( PecasRetorno ) 
+    		{
+				case PEC_CondRetOK :
+					break ;
+				case PEC_CondRetFaltaMemoria : {
+					pcor(5); printf("\n\n\tMEMORIA INSUFICIENTE PARA CRIAR PECAS !!\n\n"); pcor(4);
+					exit(1) ;
+				}
+				case PEC_CondRetJaExiste : {
+					pcor(5); printf("\n\n\tPECA JA FOI CRIADA !!\n\n"); pcor(4);
+					exit(1);
+				}
+				case PEC_CondRetCorInvalida : {
+					pcor(5); printf("\n\n\tCOR INVALIDA AO CRIAR A PECA !!\n\n"); pcor(4);
+					exit(1);
+				}
+				default : {
+					pcor(5); printf("\n\n\tERRO INESPERADO !!\n\n"); pcor(4);
+				}
+			}			
+			
     	}
 
-    	if(resposta == 1)
-    	{
-    		num_jogadores++;
-    		pf("DIGITE O NOME DO 'TERCEIRO' JOGADOR: "); scanf(" %80[^\n]", vtJogadores[2].nome); vtJogadores[2].cor = 2;
-    		pf("A COR DA SUA PECA SERA ------ "); pcor(3); pf("VERDE "); pcor(0); pf("------"); pf("\n\n");
-    		pf(".-----------------------------------.\n");
-    		pf("| 1. Caso tenha mais jogadores.     |\n");
-    		pf("| 2.Caso 'NAO' tenha mais jogadores.|\n");
-    		pf(".-----------------------------------.\n");
-    		pf("AGORA DIGITE SUA RESPOSTA: "); scanf("%d", &resposta); pf("\n\n");
-    		if (resposta < 1 || resposta > 2)
-    		{
-    			pcor(5); pf("\tNUMERO INVALIDO !!\n\n"); pcor(0);
-    			pf(".-----------------------------------.\n");
-    			pf("| 1. Caso tenha mais jogadores.     |\n");
-    			pf("| 2.Caso 'NAO' tenha mais jogadores.|\n");
-    			pf(".-----------------------------------.\n");
-    			pf("AGORA DIGITE SUA RESPOSTA: "); scanf("%d", &resposta); pf("\n\n");
-
-    			if(resposta < 1 || resposta > 2)
-    			{
-    				pcor(5); pf("\tNUMERO INVALIDO !! INICIAR EXECUTAVEL NOVAMENTE . . .\n\n"); pcor(0);
-    				exit(1);
-    			}
-    		}
-    		if(resposta == 1)
-    		{
-    			num_jogadores++;
-    			pf("DIGITE O NOME DO 'ULTIMO' JOGADOR: "); scanf(" %80[^\n]", vtJogadores[3].nome); vtJogadores[3].cor = 3;
-    			pf("A COR DA SUA PECA SERA ------ "); pcor(4); pf("AMARELO "); pcor(0); pf("------"); pf("\n\n");
+    	if ( i >= 1 && i <= 2) {
+    		printf(".-----------------------------------.\n");
+    		printf("| 1. Caso tenha mais jogadores.     |\n");
+    		printf("| 2.Caso 'NAO' tenha mais jogadores.|\n");
+    		printf(".-----------------------------------.\n");
+    		printf("AGORA DIGITE SUA RESPOSTA: "); scanf("%d", &resposta); printf("\n");
+    		while ( resposta != 1 && resposta != 2  ) {
+    			pcor(5); printf("\tNUMERO INVALIDO!! \n\n"); pcor(4);
+    			printf("DIGITE SUA RESPOSTA: "); scanf("%d", &resposta); printf("\n");
     		}
     	}
-    }
-    pf("\n----------------------------------------------------------------------------------------------------------------------------------\n\n");
-    pf("\t\t\t\tPRIMEIRO PASSO CONCLUIDO !\n\n"); 
-    pf("\tAgora para podermos iniciar a partida, o jogador devera estar ciente das regras do jogo que estao sendo representadas\n");
-    pf("na especificacao de requisitos do Software... TENHAM UM OTIMO JOGO !!!"); pf("\n\n");
 
-    for (i = 0 ; i < (num_jogadores*4) ; i ++) /* CRIACAO DAS PECAS */
-    {
-    	cor = i / 4 ;
-    	PecasRetorno = PEC_Pecas (vtPecas, i, cor);
-    	switch ( PecasRetorno ) 
-			{
-				case PEC_CondRetFaltaMemoria :
-					pcor(5); pf("\n\n\tMEMORIA INSUFICIENTE PARA CRIAR PECAS !!\n\n"); pcor(0);
-				case PEC_CondRetJaExiste :
-					pcor(5); pf("\n\n\tPECA JA FOI CRIADA !!\n\n"); pcor(0);
-				default :
-					pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
-			}
+    	num_jogadores++ ;
     }
+    
+    printf("\n***************************************************************************************************************************************\n\n\n");
+    printf("\t\t\t\t\t\t\tPRIMEIRO PASSO CONCLUIDO !\n\n\n"); 
+    printf("\n\tAgora para podermos iniciar a partida, o jogador devera estar ciente das regras do jogo que estao sendo representadas\n");
+    printf("na especificacao de requisitos do Software... TENHAM UM OTIMO JOGO !!!"); printf("\n\n\n\n");
 
     TabuleiroRetorno = TAB_CriaTabuleiro_Ludo( &pTabuleiro ) ;
 	
 	if ( TabuleiroRetorno != TAB_CondRetOK )
 	{
-		pcor(5); pf("\n\n\tMEMORIA INSUFICIENTE PARA CRIAR TABULEIRO !!\n\n"); pcor(0);
+		pcor(5); printf("\n\n\tMEMORIA INSUFICIENTE PARA CRIAR TABULEIRO !!\n\n"); pcor(4);
 	}
 
-	pf("\t--------------------------------------------------INICIO DO JOGO-------------------------------------------------------\n\n");
-
-	do
-	{
-		// DESENHA TABULEIRO
-		pf("\n\n\tAGORA E A VEZ DO VERMELHO !! VAMOS JOGAR O DADO . . .\n\n");
-		//JOGAR DADO E VERIFICAR NUMERO
-		//DECIDIR ACÃO COM USUARIO
-
-		//DESENHA TABULEIRO
-		pf("\n\n\tAGORA E A VEZ DO AZUL !! VAMOS JOGAR O DADO . . .\n\n");
-		//JOGAR DADO E VERIFICAR NUMERO
-		//DECIDIR ACÃO COM USUARIO
-
-		if (num_jogadores > 2)
+	printf("**********************************************************     INICIO DO JOGO     ******************************************************\n\n\n");
+	//DESENHA TABULEIRO
+	cond = 0 ;
+	while ( !cond ) {
+		for ( i = 0 ; i < num_jogadores && cond != 1 ; i++ ) 
 		{
-			//DESENHA TABULEIRO
-			pf("\n\n\tAGORA E A VEZ DO VERDE !! VAMOS JOGAR O DADO . . .\n\n");
-			//JOGAR DADO E VERIFICAR NUMERO
-			//DECIDIR ACÃO COM USUARIO
+			pcor(i); printf( "JOGADOR : %s\n" , vtJogadores[i].nome ) ; pcor(4);
+			dado = JogarDado() ;
 
-			if(num_jogadores > 3)
-			{
-				//DESENHA TABULEIRO
-				pf("\n\n\tAGORA E A VEZ DO AMARELO !! VAMOS JOGAR O DADO . . .\n\n");
-				//JOGAR DADO E VERIFICAR NUMERO
-				//DECIDIR ACÃO COM USUARIO
+			ZeraMapa ( valid_mapa ) ;
+			for ( k = 0 ; k < MAX_PECAS ; k++ ) {
+				ind = (MAX_PECAS * i) + k ;
+				if ( ( dado == 6 && ValidaInsercao ( pTabuleiro , vtPecas[ind] ) ) || ValidaMovimento ( pTabuleiro , vtPecas[ind] , dado ) ) 
+				{
+					valid_mapa[k] = 1 ;
+				}
 			}
-		}
+			if ( TemMovimento ( valid_mapa ) ) {
+				MostraMovimentosValidos ( valid_mapa ) ;
+				opcao = ObtemOrdemJogador() ;
+				while ( valid_mapa[opcao] != 1 ) 
+				{
+					pcor(5); printf("\n\n\tESSA PECA NAO PODE SER MOVIMENTADA !!\n\n"); pcor(4);
+					opcao = ObtemOrdemJogador() ;
+				}
 
-	} while (VerificaVencedor (vtPecas, num_jogadores) != 1);
-	
-	pf("\n\n");
-	pcor(4); pf("\t\t.----------------------------------------------.\n"); pcor(0);
-    pcor(4); pf("\t\t|                                              |\n"); pcor(0);
-    pcor(4); pf("\t\t|     PARABENS !!! TEMOS UM VENCEDOR . . .     |\n"); pcor(0);
-    pcor(4); pf("\t\t|                                              |\n"); pcor(0);
-    pcor(4); pf("\t\t.----------------------------------------------.\n"); pcor(0);
-    pf("\n\n");
+				peca = vtPecas[ (MAX_PECAS * i) + opcao ] ;
+				PEC_ObtemStatus ( peca , &status ) ;
+				if ( status == 'F' )
+					InserePecaJogo ( pTabuleiro , peca ) ;
+				else
+					RealizaMovimento ( pTabuleiro , peca , dado ) ;
+
+				//DESENHA TABULEIRO
+
+				cond = VerificaVencedor ( vtPecas , i , vtJogadores ) ; 
+			}
+				
+		} 
+	}
 
 	DesenhaPlacar( vtPecas, vtJogadores , num_jogadores );
 
-    for (i = 0 ; i < num_jogadores ; i ++) /* DESTRUICAO DAS PECAS */
+    for (i = 0 ; i < MAX_PECAS * num_jogadores ; i++ ) 
     {
-    	PecasRetorno = PEC_DestroiPeca (vtPecas[i]);
+    	PecasRetorno = PEC_DestroiPeca ( vtPecas[i] );
     	switch ( PecasRetorno ) 
 			{
-				case PEC_CondRetNaoExiste :
-					pcor(5); pf("\n\n\tPECA QUE DESEJA DESTRUIR NAO EXISTE !!\n\n"); pcor(0);
+				case PEC_CondRetOK :
+					break ;
+				case PEC_CondRetNaoExiste : {
+					pcor(5); printf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(4);
+					exit(1);
+				}
 				default :
-					pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
+					pcor(5); printf("\n\n\tERRO INESPERADO !!\n\n"); pcor(4);
+					exit(1);
 			}
     }
 
-    TabuleiroRetorno = TAB_DestruirTabuleiro ( pTabuleiro ); /* DESTRUICAO DO TABULEIRO */
+    TabuleiroRetorno = TAB_DestruirTabuleiro ( pTabuleiro ) ; 
 
-    if ( TabuleiroRetorno != TAB_CondRetOK )
-	{
-		pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
-	}
-
-	pf("\n\n");
-	pcor(2); pf("\t\t__/\\\\\\\\\\\\\\\\\\_________________________________________\n"); pcor(0);
-	pcor(2); pf("\t\t _\\/\\\\///////////___________________________________________\n"); pcor(0);
-	pcor(2); pf("\t\t  _\\/\\\\______________/\\\\___________________________________\n"); pcor(0);
-	pcor(2); pf("\t\t   _\\/\\\\\\\\\\\\_____\\///_____/\\\\\\__/\\\\\\_______________\n"); pcor(0);
-	pcor(2); pf("\t\t    _\\/\\\\///////_______/\\\\__/\\\\\\///\\\\\\///\\\\__________\n"); pcor(0);
-	pcor(2); pf("\t\t     _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); pcor(0);
-	pcor(2); pf("\t\t      _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); pcor(0);
-	pcor(2); pf("\t\t       _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); pcor(0);
-	pcor(2); pf("\t\t        _\\///______________\\///_ _\\///____\\////_____\\////________\n"); pcor(0);
-	pf("\n\n");
+	printf("\n\n");
+	pcor(0); printf("\t\t__/\\\\\\\\\\\\\\\\\\_________________________________________\n"); pcor(4);
+	pcor(0); printf("\t\t _\\/\\\\///////////___________________________________________\n"); pcor(4);
+	pcor(0); printf("\t\t  _\\/\\\\______________/\\\\___________________________________\n"); pcor(4);
+	pcor(0); printf("\t\t   _\\/\\\\\\\\\\\\_____\\///_____/\\\\\\__/\\\\\\_______________\n"); pcor(4);
+	pcor(0); printf("\t\t    _\\/\\\\///////_______/\\\\__/\\\\\\///\\\\\\///\\\\__________\n"); pcor(4);
+	pcor(0); printf("\t\t     _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); pcor(4);
+	pcor(0); printf("\t\t      _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); pcor(4);
+	pcor(0); printf("\t\t       _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); pcor(4);
+	pcor(0); printf("\t\t        _\\///______________\\///_ _\\///____\\////_____\\////________\n"); pcor(4);
+	printf("\n\n");
 
 	return 0;
 
@@ -253,107 +264,308 @@ static int JogarDado ( void )
 {
 	int valor;
 	TAB_CondRet TabuleiroRetorno;
-	TabuleiroRetorno = TAB_LancaDado ( &valor );
-	if(TabuleiroRetorno != TAB_CondRetOK)
-	{
-		pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
-	}
-	pcor(1); pf("\t\t\t+------+    \n"); pcor(0);   
-	pcor(1); pf("\t\t\t|`.    | `. \n"); pcor(0);   
-	pcor(1); pf("\t\t\t|  `+--+---+\n"); pcor(0);   
-	pcor(1); pf("\t\t\t|   |  |   |\n"); pcor(0);   
-	pcor(1); pf("\t\t\t+---+--+.  |\n"); pcor(0);   
-	pcor(1); pf("\t\t\t `. |    `.|\n"); pcor(0);   
-	pcor(1); pf("\t\t\t   `+------+\n"); pcor(0);
-	pf("\n\n")
-	pf("---------AO JOGAR O DADO VOCE OBTEVE O NUMERO: %d --------\n\n", valor);
+	TabuleiroRetorno = TAB_LancaDado ( &valor ) ;
+	
+	pcor(0); printf("\t\t\t+------+    \n"); pcor(4);   
+	pcor(0); printf("\t\t\t|`.    | `. \n"); pcor(4);   
+	pcor(0); printf("\t\t\t|  `+--+---+\n"); pcor(4);   
+	pcor(0); printf("\t\t\t|   |  |   |\n"); pcor(4);   
+	pcor(0); printf("\t\t\t+---+--+.  |\n"); pcor(4);   
+	pcor(0); printf("\t\t\t `. |    `.|\n"); pcor(4);   
+	pcor(0); printf("\t\t\t   `+------+\n"); pcor(4);
+	printf("\n\n");
+	printf("************  AO JOGAR O DADO VOCE OBTEVE O NUMERO: %d *************\n\n", valor);
 	return valor;
 }
 
-static void DesenhaPlacar ( PEC_tpPecas * pPecas , JOGO_Jogador * vtJogadores , int num_jogadores )
+static void DesenhaPlacar ( PEC_tpPeca * pPecas , JOGO_Jogador * vtJogadores , int num_jogadores )
 {
-	int i, k, final, maior = 0, pos = 0;
-	int qtdfim[] = {0,0,0,0};
+	int i, k, final ;
+	int qtdfim[] = { 0 , 0 , 0 , 0 };
+	PEC_CondRet PecasRetorno ;
 
 	for(i = 0 ; i < num_jogadores ; i++)
 	{
-		for(k = 0 ; k < 4 ; k++)
+		for( k = 4 * i ; k < (4 * i) + 4 ; k++ )
 		{
-			PecasRetorno = PEC_ObtemFinal ( pPecas[pos] , &final );
+			PecasRetorno = PEC_ObtemFinal ( pPecas[k] , &final );
 			switch ( PecasRetorno ) 
 			{
-				case PEC_CondRetNaoExiste :
-					pcor(5); pf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(0);
-				default :
-					pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
+				case PEC_CondRetOK :
+					break ;
+
+				case PEC_CondRetNaoExiste : {
+					pcor(5); printf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(4);
+					exit(1) ;
+				}
+				default : {
+					pcor(5); printf("\n\n\tERRO INESPERADO !!\n\n"); pcor(4);
+					exit(1) ;
+				}
 			}
-			pos++ ;
 			
-			if (final == 1)
-				qtdfim[i]++;
+			if ( final == 1 )
+				qtdfim[i]++ ;
 		}
 	}
-	for (i = 0; i < 4; i++)
-	{
-		if(qtdfim[i]>qtdfim[maior])
-			maior = i;
-	}
+	
+	ordenaRanking ( vtJogadores , qtdfim , num_jogadores ) ;
 
-	pf("\n\n");
-	pcor(4); pf("O JOGADOR %s E O VENCEDOR DO JOGO COM '4' PONTOS !!!\n\n", vtJogadores[maior].nome ); pcor(0);
-	for (i = 0; i < 4; i++)
+	for ( i = 0 ; i < num_jogadores ; i++ )
 	{
-		pf("JOGADOR: %s OBTEVE %d PONTOS !!\n", vtJogadores[i].nome ,qtdfim[i] );
+		printf("JOGADOR: %s OBTEVE %d PONTOS !!\n", vtJogadores[i].nome ,qtdfim[i] );
 	}
-	pf("\n");
+	printf("\n");
 }
 
-static int VerificaVencedor ( PEC_tpPecas * pPecas, int num_jogadores)
+
+
+static int VerificaVencedor ( PEC_tpPeca * pPecas, int cor, JOGO_Jogador * vtJogadores )
 {
-	int i, cor, numcor = 0, final, cont = 0 ;
+	int i , final ;
+	PEC_CondRet PecasRetorno ;
+	for ( i = cor * MAX_PECAS ; i < (cor * MAX_PECAS) + MAX_PECAS ; i++ ) {
+		PecasRetorno = PEC_ObtemFinal ( pPecas[i] , &final ) ;
+		if ( final != 1 )
+			return 0 ;
+	}
+
+	printf("\n\n");
+	pcor(3); printf("\t\t.----------------------------------------------.\n"); pcor(4);
+    pcor(3); printf("\t\t|                                              |\n"); pcor(4);
+    pcor(3); printf("\t\t|     PARABENS !!! TEMOS UM VENCEDOR . . .     |\n"); pcor(4);
+    pcor(3); printf("\t\t|                                              |\n"); pcor(4);
+    pcor(3); printf("\t\t.----------------------------------------------.\n"); pcor(4);
+    printf("\n\n");
+	pcor(3); printf("O JOGADOR %s E O VENCEDOR DO JOGO!!!\n\n", vtJogadores[cor].nome ); pcor(4);
+
+	return 1 ;
+}
+
+
+
+static void ordenaRanking ( JOGO_Jogador * vtJogadores , int *qtdfim , int n ) {		//ordenação descrescente 
+
+	int fim , i ;
+	int menor , aux ;
+
+	JOGO_Jogador jogador_aux ;
+	
+	for ( fim = n - 1 ; fim > 0 ; fim-- ) {
+		menor = 0 ;
+		for ( i = 1 ; i <= fim ; i++ )
+			if ( qtdfim[i] < qtdfim[menor] )
+				menor = i ;
+		
+		aux = qtdfim[fim] ;
+		qtdfim[fim] = qtdfim[menor] ;
+		qtdfim[menor] = aux ; 
+
+		jogador_aux = vtJogadores[fim] ;
+		vtJogadores[fim] = vtJogadores[menor] ;
+		vtJogadores[menor] = jogador_aux ;
+
+	}
+
+}		
+
+static int ValidaMovimento ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca , int n )
+{
+	int cor , cor2 ;
+	int final ;
+	PEC_tpPeca conteudo ;
+	TAB_CondRet TabuleiroRetorno ;
 	PEC_CondRet PecasRetorno ;
 
-	for(i = 0 ; i < (num_jogadores*4) ; i++)
-	{
-		PecasRetorno = PEC_ObtemCor ( pPecas[i] , &cor );
+	if ( n <= 0 || n > 6 )
+		return 0 ;
 
-		switch ( PecasRetorno ) 
-		{
-			case PEC_CondRetNaoExiste :
-				pcor(5); pf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(0);
-			default :
-				pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
-		}
-
-		PecasRetorno = PEC_ObtemFinal ( pPecas[i] , &final );
-
-		switch ( PecasRetorno ) 
-		{
-			case PEC_CondRetNaoExiste :
-				pcor(5); pf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(0);
-			default :
-				pcor(5); pf("\n\n\tERRO INESPERADO !!\n\n"); pcor(0);
-		}
-
-		if(numcor == cor)
-		{
-			if(final == 1)
-			{
-				cont ++;
-			}
-			else
-			{
-				numcor++;
-				cont = 0;
-			}
-		}
-		
-		if (cont == 4)
-		{
-			return 1;
-		}
+	PecasRetorno = PEC_ObtemFinal ( pPeca , &final ) ;
+	if ( PecasRetorno != PEC_CondRetOK ) {
+		pcor(5); printf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(4);
+		exit(1) ;
 	}
-	return 0;
+
+	if ( final == 1 )
+		return 0 ;
+
+	TabuleiroRetorno = TAB_ProcuraPeca ( pTabuleiro ,  pPeca ) ;
+	switch ( TabuleiroRetorno ) {
+
+		case TAB_CondRetOK : 
+			break ;
+		
+		case TAB_CondRetNaoEncontrouPeca : {
+			pcor(5); printf("\n\n\tPECA NAO ENCONTRADA !!\n\n"); pcor(4);
+			exit(1) ;
+		}
+		case TAB_CondRetPecaMorta : {
+			return 0 ;
+		}
+		default : {
+			pcor(5); printf("\n\n\tERRO INESPERADO !!\n\n"); pcor(4);
+			exit(1) ;
+		}
+
+	}
+
+	PEC_ObtemCor ( pPeca , &cor ) ;
+
+	TabuleiroRetorno = TAB_AvancaCasa ( pTabuleiro , cor , n ) ;
+	if ( TabuleiroRetorno == TAB_CondRetFimTabuleiro )
+		return 0 ;
+
+	TAB_ObterPecaCasa ( pTabuleiro , &conteudo ) ;
+	if ( conteudo != NULL ) {
+		PEC_ObtemCor ( conteudo , &cor2 ) ;
+		if ( cor == cor2 )
+			return 0 ;
+	}
+
+	return 1 ;
 }
+
+static void RealizaMovimento ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca , int n )
+{
+	PEC_tpPeca conteudo ;
+	TAB_CondRet TabuleiroRetorno ;
+	int valid , cond , cor ;
+
+	valid = ValidaMovimento ( pTabuleiro , pPeca , n ) ;
+	if ( !valid ) {
+		pcor(5); printf("\n\n\tMOVIMENTO INVALIDO !!\n\n"); pcor(4);
+		exit(1) ;
+	}
+
+	TabuleiroRetorno = TAB_RetiraPecaCasa ( pTabuleiro , pPeca ) ; 
+
+	PEC_ObtemCor ( pPeca , &cor ) ;
+	TAB_AvancaCasa ( pTabuleiro , cor , n ) ;
+
+	TAB_EhCasaFinal ( pTabuleiro , &cond ) ;
+	if ( cond )
+		PEC_AtualizaPeca ( pPeca , 1 , 'D' ) ;
+
+	else {
+		TAB_ObterPecaCasa ( pTabuleiro , &conteudo ) ;
+
+		if ( conteudo != NULL )
+			PEC_AtualizaPeca ( conteudo , 0 , 'F' ) ;
+
+		TAB_InserePecaCasa ( pTabuleiro , pPeca ) ;
+	}
+
+
+
+
+}
+
+static int ValidaInsercao ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) 
+{
+	int cor , cor2 ;
+	char status ;
+	PEC_tpPeca conteudo ;
+	PEC_CondRet PecasRetorno ;
+	TAB_CondRet TabuleiroRetorno ;
+
+	PecasRetorno = PEC_ObtemStatus ( pPeca , &status ) ;
+	if ( PecasRetorno != PEC_CondRetOK ) {
+		pcor(5); printf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(4);
+		exit(1) ;
+	}
+	if ( status == 'D' )
+		return 0 ;
+
+	PEC_ObtemCor ( pPeca , &cor ) ; 
+
+	TabuleiroRetorno = TAB_IrInicioCor ( pTabuleiro , cor ) ;
+	if ( TabuleiroRetorno != TAB_CondRetOK ) {
+		pcor(5); printf("\n\n\tCOR INVALIDA !!\n\n"); pcor(4);
+		exit(1) ;
+	}
+
+	TAB_ObterPecaCasa ( pTabuleiro , &conteudo ) ;
+	if ( conteudo != NULL ) {
+		PEC_ObtemCor ( conteudo , &cor2 ) ;
+		if ( cor == cor2 )
+			return 0 ;
+	}
+
+	return 1 ;
+} 
+
+static void InserePecaJogo ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca )
+{
+	int cor ;
+	char status ;
+	TAB_CondRet TabuleiroRetorno ;
+	PEC_CondRet PecasRetorno ;
+
+	PecasRetorno = PEC_ObtemStatus ( pPeca , &status ) ;
+	if ( PecasRetorno != PEC_CondRetOK ) {
+		pcor(5); printf("\n\n\tPECA NAO EXISTE !!\n\n"); pcor(4);
+		exit(1) ;
+	}
+
+	if ( status == 'D' ) {
+		pcor(5); printf("\n\n\tPECA JA INSERIDA !!\n\n"); pcor(4);
+		exit(1) ;
+	}
+
+
+	PecasRetorno = PEC_ObtemCor ( pPeca , &cor ) ;
+
+	TabuleiroRetorno = TAB_IrInicioCor ( pTabuleiro , cor ) ;
+	if ( TabuleiroRetorno != TAB_CondRetOK ) {
+		pcor(5); printf("\n\n\tCOR INVALIDA !!\n\n"); pcor(4);
+		exit(1) ;
+	}
+
+	TAB_InserePecaCasa ( pTabuleiro , pPeca ) ;
+
+}
+
+static int ObtemOrdemJogador ( void )
+{
+	int num ;
+	printf ( "DIGITE O NUMERO DA PECA QUE DESEJA MOVIMENTAR : " ) ;
+	scanf ( "%d" , &num ) ; 
+	while ( num < 0 || num > 3 ) {
+		pcor(5); printf("\n\n\tNUMERO INVALIDO !!\n\n"); pcor(4);
+		printf ( "DIGITE O NUMERO DA PECA QUE DESEJA MOVIMENTAR : " ) ;
+		scanf ( "%d" , &num ) ; 
+	}
+	printf("\n\n");
+	return num ;
+}
+
+static void MostraMovimentosValidos ( int *mapa )
+{
+	int i ; 
+	printf("PECAS QUE PODEM SER MOVIDAS : ");
+	for ( i = 0 ; i < MAX_PECAS ; i++ )
+	{
+		if ( mapa[i] == 1 )
+			printf( "P%d " , i ) ;
+	}
+	printf("\n") ;
+}
+
+static void ZeraMapa ( int *mapa )
+{
+	int i ; 
+	for ( i = 0 ; i < MAX_PECAS ; i++ )
+		mapa[i] = 0 ;
+}
+
+static int TemMovimento ( int *mapa )
+{
+	int i ;
+	for ( i = 0 ; i < MAX_PECAS ; i++ )
+		if ( mapa[i] == 1 )
+			return 1 ;
+	return 0 ;
+}
+
 
 /************* Fim do módulo de implementação: JOGO Módulo jogo / Principal ****************/

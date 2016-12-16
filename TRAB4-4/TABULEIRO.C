@@ -1,4 +1,3 @@
-
 /***************************************************************************
 *  $MCI Módulo de implementação: TAB  Tabuleiro
 *
@@ -38,10 +37,12 @@
 *
 ***********************************************************************/
  
-typedef struct Tabuleiro {
- 
+typedef struct Tabuleiro 
+{
     LST_Circular casas ;
         /* Ponteiro para a lista de casas */
+    int flag ;
+        /* Indica se a casa corrente esta no desvio: 1 caso verdadeiro 0 caso falso */
  
 } TAB_TabuleiroLudo ;
  
@@ -51,7 +52,8 @@ typedef struct Tabuleiro {
 *
 ***********************************************************************/
  
-typedef struct TAB_casa {
+typedef struct TAB_casa 
+{
     int cor ;
         /* Indica a cor da casa */
  
@@ -62,6 +64,8 @@ typedef struct TAB_casa {
         /* Ponteiro para o desvio */
  
 } TAB_Casa ;
+
+
 typedef void ( *pFunc ) ( void * ) ; typedef void **ppVoid ;
  
 /***** Protótipo das funções encapsuladas no módulo *****/
@@ -69,14 +73,14 @@ typedef void ( *pFunc ) ( void * ) ; typedef void **ppVoid ;
 static TAB_Casa *CriaCasa ( LIS_tppLista desvio , 
                              PEC_tpPeca conteudo , int cor ) ;
 
-static int ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca ) ;
+static void IrDesvioCor ( TAB_TabuleiroLudo *pTabuleiro , int cor ) ;
  
 static void LiberarCasa ( TAB_Casa *pCasa ) ;
  
  
 /*****  Código das funções exportadas pelo módulo  *****/
  
-/***************************************************************************
+/*************************************************************************** 
 *
 *  Função: TAB  &Criar tabuleiro
 *  ****/
@@ -161,179 +165,265 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
     }
  
     (*pTabuleiro)->casas = pListaCirc ;
- 
+    (*pTabuleiro)->flag = 0 ;
+    
     return TAB_CondRetOK ;
  
 } /* Fim função: TAB  &Criar tabuleiro */
 
-/***************************************************************************
+/*************************************************************************** 
 *
-*  Função: TAB  &Mover peça
+*  Função: TAB  &Procura Peça
 *  ****/
- 
- 
-TAB_CondRet TAB_MovePeca( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca pPeca , int n )
-{
- 
-    TAB_Casa *casa , *aux;
 
-    int cor , final , cor2, cond ;
- 
+TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )        
+{
+    PEC_CondRet retorno_pec ;
+    TAB_Casa *casa , *aux ;
+    LST_Circular lista_circular ;
+    LIS_tppLista lista_simples ;
+    LIS_tpCondRet retorno_lis ;
+    int cor ;
     char status ;
 
-    LIS_tppLista caminho_final = NULL;
-
-    LIS_tpCondRet retorno_lis ;
-
-    PEC_CondRet retorno_pec ;
-
-    if ( n <= 0 || n > 6 )
-    {
-        return TAB_CondRetMovimentoInvalido ;
-    }
-
-    retorno_pec = PEC_ObtemCor ( pPeca , &cor ) ;
-    if ( retorno_pec != PEC_CondRetOK )
-        return TAB_CondRetPecaNaoExiste ;
-    
-    PEC_ObtemFinal ( pPeca , &final ) ;
-    PEC_ObtemStatus ( pPeca , &status ) ;
- 
-    if ( status == 'F' )
-    {
-        return TAB_CondRetPecaMorta ;
-    }
-
-    if ( final == 1 )
-    {
-        return TAB_CondRetMovimentoInvalido ;
-    }
- 
-    cond = ProcuraPeca ( pTabuleiro , pPeca ) ;
-    if ( cond == 0 )
-    {
-        return TAB_CondRetNaoEncontrouPeca ;
-    }
-    
-    LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
-
-    aux = casa ;
-    if ( casa->conteudo == pPeca ) {     
-
-    	while ( aux->cor != cor && n > 0 ) {
-    		LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-    		LST_ObterValor ( pTabuleiro->casas , (ppVoid) &aux ) ;
-    		n-- ;
-    	}
-    	if ( n != 0 ) {
-    		caminho_final = aux->desvio ;
-    		LIS_IrInicioLista ( caminho_final ) ;
-    		retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , n-1 ) ;
-    		if ( retorno_lis == LIS_CondRetFimLista )
-    			return TAB_CondRetMovimentoInvalido ;
-    		LIS_ObterValor ( caminho_final , ( ppVoid ) &aux ) ;
-    	}
-
-    }
-    else {                  
-
-    	caminho_final = casa->desvio ;
-    	retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , n ) ;
-    	if ( retorno_lis == LIS_CondRetFimLista )
-    		return TAB_CondRetMovimentoInvalido ;
-    	LIS_ObterValor ( caminho_final , ( ppVoid ) &aux ) ;
-        
-    }
-
-    if ( caminho_final != NULL ) {      //somente é necessario verificar se chegou na casa final se entrou na reta final
-
-        retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , 1 ) ;       
-        if ( retorno_lis == LIS_CondRetFimLista ) {                 //verifica se chegou na casa final
-            PEC_AtualizaPeca ( pPeca , 1 , 'D' ) ;      //se chegou, somente é sinalizado que aquela peça chegou na casa final ( final = 1 )
-            casa->conteudo = NULL ;         //limpa a casa onde a peça estava antes do movimento
-            // as peças que chegarem ao final não serão inseridas na casa final. Não é possível guardar mais de uma peça em uma casa
-            return TAB_CondRetOK ;
-        }
-
-    }
-
-    if ( aux->conteudo != NULL ) {
-    
-        PEC_ObtemCor ( aux->conteudo , &cor2 ) ;
-        if ( cor2 == cor ) 
-            return TAB_CondRetMovimentoInvalido ;
-              
-        PEC_AtualizaPeca ( aux->conteudo , 0 , 'F' ) ;
-        
-    }
-
-
-
-    casa->conteudo = NULL ;
-    aux->conteudo = pPeca ;
- 
-    return TAB_CondRetOK ;
- 
-}/* Fim função: TAB  &Mover Peça */
-
-
- 
-/***************************************************************************
-*
-*  Função: TAB  &Insere peça no inicio
-*  ****/
- 
- 
-TAB_CondRet TAB_InserePecaInicio ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
-{
-     
-    int cor, cor2 ;
- 
-    char status , status2 ;
- 
-    TAB_Casa *casa ;
-
-    PEC_CondRet retorno_pec ;
- 
     retorno_pec = PEC_ObtemStatus ( pPeca , &status ) ;
     if ( retorno_pec != PEC_CondRetOK )
         return TAB_CondRetPecaNaoExiste ;
 
-    if ( status == 'D' )
-    {
-        return TAB_CondRetMovimentoInvalido ;
-    }
-    PEC_ObtemCor ( pPeca , &cor ) ; 
-    LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
- 
-    while ( casa->cor != cor ){
-        LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-        LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
-    }
- 
-    LST_AvancarElementoCorrente ( pTabuleiro->casas , 2 ) ;
- 
-    LST_ObterValor ( pTabuleiro->casas , ( ppVoid ) &casa ) ;
+    if ( status == 'F' )
+        return TAB_CondRetPecaMorta ;
+
+    lista_circular = pTabuleiro->casas ;
+    LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+    aux = casa ;
     
-    
-    if ( casa->conteudo != NULL ){
-    
-        PEC_ObtemCor ( casa->conteudo , &cor2 ) ;
-        if ( cor2 == cor )
-        {
-            return TAB_CondRetMovimentoInvalido ;
+    do {
+        
+        if ( aux->conteudo == pPeca ) {
+            pTabuleiro->flag = 0 ;
+            return TAB_CondRetOK ;
         }
-        PEC_AtualizaPeca ( casa->conteudo, 0, 'F' ) ;
+
+        LST_AvancarElementoCorrente ( lista_circular , 1 ) ;
+        LST_ObterValor ( lista_circular , ( ppVoid ) &aux ) ;
+
+    } while ( aux != casa ) ;
+
+    PEC_ObtemCor ( pPeca , &cor ) ;
+    IrDesvioCor ( pTabuleiro , cor ) ;
+
+    LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+    lista_simples = casa->desvio ;
+    LIS_IrInicioLista ( lista_simples ) ;
+    
+    do {
+
+        LIS_ObterValor ( lista_simples , ( ppVoid ) &aux ) ;
+        if ( aux->conteudo == pPeca ) {
+            pTabuleiro->flag = 1 ;      //para indicar que entrou no desvio
+            return TAB_CondRetOK ;
+        }
+
+        retorno_lis = LIS_AvancarElementoCorrente ( lista_simples , 1 ) ;
+
+    } while ( retorno_lis != LIS_CondRetFimLista ) ;
+
+    return TAB_CondRetNaoEncontrouPeca ;
+   
+}  /* Fim função: TAB  &Procura Peça */
+
+/*************************************************************************** 
+*
+*  Função: TAB  &Obter Peça Casa
+*  ****/
+
+TAB_CondRet TAB_ObterPecaCasa ( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca *pPeca )
+{
+    TAB_Casa *casa ;
+    LST_Circular lista_circular ;
+    LIS_tppLista lista_simples ;
+    
+    lista_circular = pTabuleiro->casas ;
+    LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+
+    if ( pTabuleiro->flag  ) {
+        lista_simples = casa->desvio ;
+        LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
     }
 
-    PEC_AtualizaPeca ( pPeca , 0 , 'D' ) ;
- 
-    casa->conteudo = pPeca ;
- 
+    *pPeca = casa->conteudo ;
+
+    return TAB_CondRetOK ; 
+
+}   /* Fim função: TAB  &Obter Peça Casa */
+
+/*************************************************************************** 
+*
+*  Função: TAB  &Avança Casa
+*  ****/
+
+TAB_CondRet TAB_AvancaCasa ( TAB_TabuleiroLudo *pTabuleiro , int cor , int n )
+{
+    TAB_Casa *casa ;
+    LST_Circular lista_circular ;
+    LIS_tppLista lista_simples ;
+    LIS_tpCondRet retorno_lis ;
+
+    if ( cor < 0 || cor > 3 )
+        return TAB_CondRetCorInvalida ;
+    
+    lista_circular = pTabuleiro->casas ;
+    LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+    
+    if ( pTabuleiro->flag  ) {
+
+        lista_simples = casa->desvio ;
+        retorno_lis = LIS_AvancarElementoCorrente ( lista_simples , n ) ;
+        if ( retorno_lis == LIS_CondRetFimLista )
+            return TAB_CondRetFimTabuleiro ;
+
+        return TAB_CondRetOK ;
+
+    } 
+
+    while ( casa->cor != cor && n != 0) {
+
+        LST_AvancarElementoCorrente ( lista_circular , 1 ) ;
+        LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+        n-- ;
+
+    }
+    if ( n != 0 ) {
+        lista_simples = casa->desvio ;
+        LIS_IrInicioLista ( lista_simples ) ;
+        retorno_lis = LIS_AvancarElementoCorrente ( lista_simples , n - 1 ) ;
+        if ( retorno_lis == LIS_CondRetFimLista )
+            return TAB_CondRetFimTabuleiro ;
+        pTabuleiro->flag = 1 ;
+    }
+
     return TAB_CondRetOK ;
+
+}   /* Fim função: TAB  &Avança Casa */
+
+/*************************************************************************** 
+*
+*  Função: TAB  &Retira Peça Casa
+*  ****/
+
+TAB_CondRet TAB_RetiraPecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca ) 
+{
+    LST_Circular lista_circular ;
+    LIS_tppLista lista_simples ;
+    TAB_Casa *casa ;
+    TAB_CondRet retorno_tab ;
+    retorno_tab = TAB_ProcuraPeca ( pTabuleiro , pPeca ) ;
+    if ( retorno_tab != TAB_CondRetOK )
+        return retorno_tab ;
+
+    lista_circular = pTabuleiro->casas ;
+    LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+
+    if ( pTabuleiro->flag  ) {
+        lista_simples = casa->desvio ;
+        LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
+    }
+    
+    casa->conteudo = NULL ;
+
+    PEC_AtualizaPeca ( pPeca , 0 , 'F' ) ;
+
+    return TAB_CondRetOK ;
+
+}   /* Fim função: TAB  &Retira Peça Casa */
+
+/*************************************************************************** 
+*
+*  Função: TAB  &Insere Peça Casa
+*  ****/
+
+TAB_CondRet TAB_InserePecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca ) 
+{
+    LST_Circular lista_circular ;
+    LIS_tppLista lista_simples ;
+    TAB_Casa *casa ;
+    PEC_CondRet retorno_pec ;
+    int cor ;
+
+    retorno_pec = PEC_ObtemCor ( pPeca , &cor ) ;
+    if ( retorno_pec != PEC_CondRetOK )
+        return TAB_CondRetPecaNaoExiste ;
+
+    lista_circular = pTabuleiro->casas ;
+    LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+
+    if ( pTabuleiro->flag  ) {
+        lista_simples = casa->desvio ;
+        LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
+    }
+
+    if ( casa->conteudo != NULL ) 
+        TAB_RetiraPecaCasa ( pTabuleiro , casa->conteudo ) ;
+    
+
+    PEC_AtualizaPeca ( pPeca , 0 , 'D' ) ;
+
+    casa->conteudo = pPeca ;
+
+    return TAB_CondRetOK ;
+
+}  /* Fim função: TAB  &Insere Peça Casa */
+
+/*************************************************************************** 
+*
+*  Função: TAB  &Ir Início Cor
+*  ****/
  
-} /* Fim função: TAB  &Insere peça no inicio */
- 
+TAB_CondRet TAB_IrInicioCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
+{
+    LST_Circular lista_circular ;
+
+    if ( cor < 0 || cor > 3 )
+        return TAB_CondRetCorInvalida ;
+
+    lista_circular = pTabuleiro->casas ;
+
+    IrDesvioCor ( pTabuleiro , cor ) ;
+    
+    LST_AvancarElementoCorrente ( lista_circular , 2 ) ;
+
+    return TAB_CondRetOK ;
+
+}   /* Fim função: TAB  &Ir Inicio Cor */
+
+
+TAB_CondRet TAB_EhCasaFinal ( TAB_TabuleiroLudo *pTabuleiro , int *cond )       //verifica se casa corrente é a casa final
+{
+    TAB_Casa *casa ;
+    LST_Circular lista_circular ;
+    LIS_tppLista lista_simples ;
+    LIS_tpCondRet retorno_lis ;
+    
+    if ( pTabuleiro->flag ) {
+        lista_circular = pTabuleiro->casas ;
+        LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+        
+        lista_simples = casa->desvio ;
+        retorno_lis = LIS_AvancarElementoCorrente ( lista_simples , 1 ) ;
+        if ( retorno_lis == LIS_CondRetFimLista )
+            *cond = 1 ;
+        else {
+            LIS_AvancarElementoCorrente ( lista_simples , -1 ) ;
+            *cond = 0 ;
+        }
+    }
+    else
+        *cond = 0 ;
+
+    return TAB_CondRetOK ;
+
+}   
+
  
 /***************************************************************************
 *
@@ -354,8 +444,6 @@ TAB_CondRet TAB_LancaDado ( int * pValor )
   
 } /* Fim função: TAB  &Gera Valor */
 
-
-
 /***************************************************************************
 *
 *  Função: TAB  &Destroi Tabuleiro
@@ -371,11 +459,14 @@ TAB_CondRet TAB_DestruirTabuleiro ( TAB_TabuleiroLudo *pTabuleiro )
 } /* Fim função: TAB  &Destroi Tabuleiro */
  
  
- 
 /****************  Código das funções encapsuladas no módulo  **********************/
  
- 
-static TAB_Casa *CriaCasa ( LIS_tppLista desvio , PEC_tpPeca conteudo , int cor )
+/*************************************************************************** 
+*
+*  Função: TAB  &Criar Casa
+*  ****/
+
+static TAB_Casa * CriaCasa ( LIS_tppLista desvio , PEC_tpPeca conteudo , int cor )
 {
     TAB_Casa *nv ;
      
@@ -392,46 +483,35 @@ static TAB_Casa *CriaCasa ( LIS_tppLista desvio , PEC_tpPeca conteudo , int cor 
     nv->conteudo = conteudo ;
  
     return nv ;
-} 
 
-static int ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )			//retorna 1 caso tenha encontrado a peça e 0 caso contrário
+}  /* Fim função: TAB  &Criar Casa */
+
+/*************************************************************************** 
+*
+*  Função: TAB  &Ir Desvio Cor
+*  ****/
+
+static void IrDesvioCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
 {
-    TAB_Casa *casa, *aux, *aux2 ;
-    LIS_tppLista caminho_final ;
-    LIS_tpCondRet retorno_lis ;
-    int cor ;
-      
-    PEC_ObtemCor ( pPeca , &cor ) ;
+    TAB_Casa *casa ;
+    LST_Circular lista_circular ;
 
-    LST_ObterValor ( pTabuleiro->casas , (ppVoid) &casa ) ;
-    aux = casa ;
-    do {
+    lista_circular = pTabuleiro->casas ;
 
-        if ( aux->conteudo == pPeca )
-            return 1 ;
+    LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+    while ( casa->cor != cor ) {
+        LST_AvancarElementoCorrente ( lista_circular , 1 ) ;
+        LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+    }
+    pTabuleiro->flag = 0 ;
 
-        else if ( aux->cor == cor && aux->desvio != NULL ) {
-            caminho_final = aux->desvio ;
-            LIS_IrInicioLista( caminho_final ) ;
-            do {
-
-                LIS_ObterValor ( caminho_final , ( ppVoid ) &aux2 ) ;
-                if ( aux2->conteudo == pPeca )
-                    return 1 ;
-                retorno_lis = LIS_AvancarElementoCorrente ( caminho_final , 1 ) ;
-
-            } while ( retorno_lis != LIS_CondRetFimLista ) ;
-        }
-
-        LST_AvancarElementoCorrente ( pTabuleiro->casas , 1 ) ;
-        LST_ObterValor ( pTabuleiro->casas , (ppVoid) &aux ) ;
-
-    } while ( aux != casa ) ;
-
-    return 0 ;
-   
-}
+}  /* Fim função: TAB  &Ir Desvio Cor */
  
+/*************************************************************************** 
+*
+*  Função: TAB  &Liberar Casa
+*  ****/
+
 static void LiberarCasa ( TAB_Casa *pCasa ) 
 {
  
@@ -446,5 +526,5 @@ static void LiberarCasa ( TAB_Casa *pCasa )
     }
      
     pCasa = NULL ;
-}
 
+}   /* Fim função: TAB  &Liberar Casa */

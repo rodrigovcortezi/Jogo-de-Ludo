@@ -26,22 +26,21 @@
 *
 *     Observacao importante: O modulo do tabuleiro não se importa
 *     com as regras do jogo de ludo, o modulo do jogo apenas chamará as 
-*	    funções do tabuleiro caso essas regras sejam previamente testadas, 
-*	    por exemplo: o jogo avaliará se o jogador poderá mover a peça para
-*	    uma casa X, caso ele puder ele chama o modulo tabuleiro.
-*	  
+*     funções do tabuleiro caso essas regras sejam previamente testadas, 
+*     por exemplo: o jogo avaliará se o jogador poderá mover a peça para
+*     uma casa X, caso ele puder ele chama o modulo tabuleiro.
+*   
 ***************************************************************************/
 
 #if defined( TABULEIRO_OWN )
-#define TABULEIRO_EXT
+   #define TABULEIRO_EXT
 #else
-#define TABULEIRO_EXT extern
+    #define TABULEIRO_EXT extern
 #endif
 
 #include "LCIRC.H"
 #include "LISTA.H"
 #include "PECAS.H"
-
 
 /***********************************************************************
 *
@@ -55,23 +54,26 @@
 
    typedef enum {
 
-        	TAB_CondRetOK,
-               		    /* Concluiu corretamente */   
+          TAB_CondRetOK,
+          /* Concluiu corretamente */   
 
-		      TAB_CondRetFaltouMemoria, 
-	       		          /* Faltou Memoria */
+          TAB_CondRetFaltouMemoria, 
+          /* Faltou Memoria */
 
           TAB_CondRetPecaNaoExiste,
-                      /* Peça não criada */
-			   
-        	TAB_CondRetPecaMorta,
-              		    /* Peça fora de jogo */
+          /* Peça não criada */
+         
+          TAB_CondRetPecaMorta,
+          /* Peça fora de jogo */
 
-        	TAB_CondRetNaoEncontrouPeca,
-	      		          /* Não encontrou */
+          TAB_CondRetNaoEncontrouPeca,
+          /* Não encontrou */
 
-		      TAB_CondRetMovimentoInvalido
-	      		          /* Movimento Invalido */
+          TAB_CondRetCorInvalida,
+          /* Cor inválida */
+          
+          TAB_CondRetFimTabuleiro
+          /* Chegou ao final do tabuleiro */
    
    } TAB_CondRet ;
 
@@ -85,14 +87,15 @@ typedef struct Tabuleiro * TAB_tpLudo;
 *
 *  $ED Descrição da função
 *     Cria uma tabuleiro de ludo utilizando lista circular e lisa encadeada. 
-*     Ele pode armazenar peças de qualquer tipo
+*     Ele pode armazenar peças de qualquer tipo.
 *
 *  $EP Parâmetros
-*     * pTabuleiro - ponteiro para tabuleiro passado como referencia
+*     * pTabuleiro - ponteiro para tabuleiro a ser criado.
 *
 *  $FV Valor retornado
 *     TAB_CondRetOK - Se executou corretamente a criaçao do tabuleiro
 *     TAB_CondRetFaltouMemoria - Se houve algum problema de memoria
+*
 ***********************************************************************/
 
 /* Assertivas de Entrada TAB_CriaTabuleiro_Ludo
@@ -109,70 +112,6 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_tpLudo * pTabuleiro ) ;
 *
 *  Fim Assertiva de Saida TAB_CriaTabuleiro_Ludo */
 
-/***********************************************************************
-*
-*  $FC Função: TAB  &Mover peca
-*
-*  $ED Descrição da função
-*     Move uma peca na casa do tabuleiro para outra casa.
-*
-*  $EP Parâmetros
-*     pTabuleiro - ponteiro para tabuleiro a ser modificado
-*     pPeca      - ponteiro para a peca a ser movimentada
-*     n            - numero de movimentos a andar com a peça
-*
-*  $FV Valor retornado
-*     TAB_CondRetOK - se conseguiu mover corretamente
-*     TAB_CondRetPecaMorta - se a peca estiver fora de jogo
-*     TAB_CondRetNaoEncontrouPeca - se a peça que não é morta não é achada no tabuleiro
-*     TAB_CondRetMovimentoInvalido - se nao foi possivel mover peca
-*
-***********************************************************************/
-
-/* Assertiva de Entrada TAB_MovePeca
-*  Existir um tabuleiro ja criado
-*  Existir uma peça passada como parâmetro
-*  Existir pelo menos uma casa no tabuleiro para qual essa peça pode se mover.
-*
-*  Fim Assertiva de Entrada TAB_MovePeca */
-
-TAB_CondRet TAB_MovePeca( TAB_tpLudo pTabuleiro, PEC_tpPeca pPeca , int n ) ;
-
-/* Assertiva de Saida TAB_MovePeca
-*  A funcao retornara um TAB_tpCondRet
-*
-*  Fim Assertiva de Saida TAB_MovePeca */
-
-/***********************************************************************
-*
-*  $FC Função: TAB  &Insere Peca no Inicio
-*
-*  $ED Descrição da função
-*     Insere uma peca no inicio do tabuleiro de sua cor
-*
-*  $EP Parâmetros
-*     pTabuleiro - poonteiro para tabuleiro a ser trabalhado
-*     pPeca - ponteiro para a peça a ser inserida
-*
-*  $FV Valor retornado
-*     TAB_CondRetOK - se conseguiu inserir corretamente
-*     TAB_CondRetMovimentoInvalido - se nao pode inserir peca neste local
-*
-***********************************************************************/
-
-/* Assertivas de Entrada TAB_InserePecaInicio
-*  Existir Tabuleiro ja criado
-*  Existir peca a ser inserida no tabuleiro
-*
-*  Fim Assertiva de Entrada TAB_InserePecaInicio  */
-
-TAB_CondRet TAB_InserePecaInicio ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
-
-/* Assertiva de Saida TAB_InserePecaInicio
-*  Inseriu a peça no inicio do tabuleiro
-*  A funcao retornara um TAB_CondRet
-*
-*  Fim Assertiva de Saida TAB_InserePecaInicio */
 
 /***********************************************************************
 *
@@ -186,8 +125,8 @@ TAB_CondRet TAB_InserePecaInicio ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
 *                    o valor aleatório gerado pelo dado.
 *
 *  $FV Valor retornado
-*     TAB_CondRetOK - Se valor está dentro do padrão (Número de 1 a 6)	  
-*		
+*     TAB_CondRetOK - Se valor está dentro do padrão (Número de 1 a 6)    
+*   
 ***********************************************************************/
 
 /* Assertiva de Entrada TAB_LancaDado
@@ -211,10 +150,10 @@ TAB_CondRet TAB_LancaDado ( int * pValor ) ;
 *     Destrói o tabuleiro criado.
 *
 *  $EP Parâmetros
-*     pTabuleiro - vetor de tabuleiro passado como referencia	  
+*     pTabuleiro - ponteiro para tabuleiro a destruir.    
 *
 *  $FV Valor retornado
-*     TAB_CondRetOK - destruiu
+*     TAB_CondRetOK - destruiu corretamente.
 *
 ***********************************************************************/
 
@@ -227,18 +166,264 @@ TAB_CondRet TAB_DestruirTabuleiro ( TAB_tpLudo pTabuleiro ) ;
 
 /*  Assertiva de Saida TAB_DestruirTabuleiro
 *   O tabuleiro deve ser destruido
-*	Para todo pTabuleiro, pTabuleiro = NULL
+*   Para todo pTabuleiro, pTabuleiro = NULL
 *   A memoria deve ser liberada para todo pTabuleiro
 *   A funcao retorna um TAB_CondRet
 *
 *   Fim Assertiva de Saida TAB_DestruirTabuleiro */
 
+/***********************************************************************
+*
+*  $FC Função: TAB  &Procura Peça
+*
+*  $ED Descrição da função
+*     Procura uma determinada peça no tabuleiro.
+*
+*  $EP Parâmetros
+*     pTabuleiro - ponteiro tabuleiro passado como referencia  
+*     pPeca - ponteiro para peça a ser procuurada. 
+*
+*  $FV Valor retornado
+*     TAB_CondRetOK - se peça procurada foi encontrada.
+*     TAB_CondRetPecaNaoExiste - se peça procurada não existe.
+*     TAB_CondRetPecaMorta - se peça está fora de jogo.
+*     TAB_CondRetNaoEncontrouPeca - se a peça procurada não foi encontrada.
+*
+***********************************************************************/
+
+/* Assertivas de entrada TAB_ProcuraPeca
+*  Existir um tabuleiro ja criado.
+*  Existir já uma peça criada.
+*  Ponteiros do parâmetro devem fazer referência correta.
+*
+*  Fim Assertivas de Entrada TAB_ProcuraPeca */
+
+TAB_CondRet TAB_ProcuraPeca ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+
+/*  Assertiva de Saida TAB_ProcuraPeca
+*   A funcao retorna um TAB_CondRet
+*
+*   Fim Assertiva de Saida TAB_ProcuraPeca */
+
+/***********************************************************************
+*
+*  $FC Função: TAB  &Obter Peça Casa
+*
+*  $ED Descrição da função
+*     Obtem uma peça dentro de uma casa no tabuleiro.
+*
+*  $EP Parâmetros
+*     pTabuleiro - ponteiro para tabuleiro passado como referencia.
+*     pPeca - ponteiro para lugar a ser aramzenado dados da Peça   
+*
+*  $FV Valor retornado
+*     TAB_CondRetOK - se peça procurada foi encontrada.
+*
+***********************************************************************/
+
+/* Assertivas de entrada TAB_ObterPecaCasa
+*  Existir um tabuleiro ja criado.
+*  Ponteiros do parâmetro devem fazer referência correta.
+*
+*  Fim Assertivas de Entrada TAB_ObterPecaCasa */
+
+TAB_CondRet TAB_ObterPecaCasa ( TAB_tpLudo pTabuleiro, PEC_tpPeca *pPeca ) ;
+
+/*  Assertiva de Saida TAB_ObterPecaCasa
+*   O ponteiro pPeca deverá ser modificado.
+*   A funcao retorna um TAB_CondRet
+*
+*   Fim Assertiva de Saida TAB_ObterPecaCasa */
+
+/***********************************************************************
+*
+*  $FC Função: TAB  &Avança Casa
+*
+*  $ED Descrição da função
+*     Avança, dado um valor n, n casas no tabuleiro.
+*
+*  $EP Parâmetros
+*     pTabuleiro - ponteiro para tabuleiro passado como referencia.
+*     cor - informação da cor da casa para qual será avançada. 
+*     n - numero inteiro de casas a ser avançadas. 
+*
+*  $FV Valor retornado
+*     TAB_CondRetOK - se peça procurada foi encontrada.
+*     TAB_CondRetCorInvalida - caso a cor passada seja inválida.
+*     TAB_CondRetFimTabuleiro - caso tenha chegado ao "fim" do tabuleiro.
+*
+***********************************************************************/
+
+/* Assertivas de entrada TAB_AvancaCasa
+*  Existir um tabuleiro ja criado.
+*  A cor passada como parâmetro deverá ser válida (cor entre 0 e 3).
+*
+*  Fim Assertivas de Entrada TAB_AvancaCasa */
+
+TAB_CondRet TAB_AvancaCasa ( TAB_tpLudo pTabuleiro , int cor , int n ) ;
+
+/*  Assertiva de Saida TAB_AvancaCasa
+*   A funcao retorna um TAB_CondRet
+*
+*   Fim Assertiva de Saida TAB_AvancaCasa */
+
+/***********************************************************************
+*
+*  $FC Função: TAB  &Retira Peça da Casa
+*
+*  $ED Descrição da função
+*     Retira uma determinada peça passada como parâmetro de uma casa.
+*
+*  $EP Parâmetros
+*     pTabuleiro - ponteiro para tabuleiro passado como referencia.
+*     pPeca - ponteiro para peça a ser retirada.
+*
+*  $FV Valor retornado
+*     TAB_CondRetOK - se peça procurada foi encontrada.
+*     TAB_CondRetPecaNaoExiste - se peça procurada não existe.
+*     TAB_CondRetPecaMorta - se peça está fora de jogo.
+*     TAB_CondRetNaoEncontrouPeca - se a peça procurada não foi encontrada.
+*
+***********************************************************************/
+
+/* Assertivas de entrada TAB_RetiraPecaCasa
+*  Existir um tabuleiro ja criado.
+*  Existir uma peça já criada.
+*
+*  Fim Assertivas de Entrada TAB_RetiraPecaCasa */
+
+TAB_CondRet TAB_RetiraPecaCasa ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+
+/*  Assertiva de Saida TAB_RetiraPecaCasa
+*   A peça deverá ser retirada caso esteja na casa.
+*   A funcao retorna um TAB_CondRet
+*
+*   Fim Assertiva de Saida TAB_RetiraPecaCasa */
+
+/***********************************************************************
+*
+*  $FC Função: TAB  &Insere Peça da Casa
+*
+*  $ED Descrição da função
+*     Insere uma determinada peça passada como parâmetro de uma casa.
+*
+*  $EP Parâmetros
+*     pTabuleiro - ponteiro para tabuleiro passado como referencia.
+*     pPeca - ponteiro para peça a ser retirada.
+*
+*  $FV Valor retornado
+*     TAB_CondRetOK - se peça procurada foi encontrada.
+*     TAB_CondRetPecaNaoExiste - se peça procurada não existe.
+*
+***********************************************************************/
+
+/* Assertivas de entrada TAB_InserePecaCasa
+*  Existir um tabuleiro ja criado.
+*  Existir uma peça já criada.
+*
+*  Fim Assertivas de Entrada TAB_InserePecaCasa */
+
+TAB_CondRet TAB_InserePecaCasa ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+
+/*  Assertiva de Saida TAB_InserePecaCasa
+*   A peça deverá ser inserida caso tenha espaço na casa.
+*   A funcao retorna um TAB_CondRet
+*
+*   Fim Assertiva de Saida TAB_InserePecaCasa */
+
+/***********************************************************************
+*
+*  $FC Função: TAB  &Ir Inicio Cor
+*
+*  $ED Descrição da função
+*     Dado uma cor, vai ao inicio de seu percurso no tabuleiro.
+*
+*  $EP Parâmetros
+*     pTabuleiro - ponteiro para tabuleiro passado como referencia.
+*     cor - valor correspondente a cor que se deseja ir ao inicio.
+*
+*  $FV Valor retornado
+*     TAB_CondRetOK - se peça procurada foi encontrada.
+*     TAB_CondRetCorInvalida - se a cor passada é inválida
+*
+***********************************************************************/
+
+/* Assertivas de entrada TAB_IrInicioCor
+*  Existir um tabuleiro ja criado.
+*  A cor passada como parâmetro deverá ser válida (cor entre 0 e 3).
+*
+*  Fim Assertivas de Entrada TAB_IrInicioCor */
+
+TAB_CondRet TAB_IrInicioCor ( TAB_tpLudo pTabuleiro , int cor ) ;
+
+/*  Assertiva de Saida TAB_IrInicioCor
+*   A função deverá ir ao inicio do percurso da cor.
+*   A funcao retorna um TAB_CondRet
+*
+*   Fim Assertiva de Saida TAB_IrInicioCor */
+
+/***********************************************************************
+*
+*  $FC Função: TAB  &Eh Casa Final
+*
+*  $ED Descrição da função
+*     Verifica dado um tabuleiro se chegou a casa final.
+*
+*  $EP Parâmetros
+*     pTabuleiro - ponteiro para tabuleiro passado como referencia.
+*     n - ponteiro para armazenar resposta.
+*
+*  $FV Valor retornado
+*     TAB_CondRetOK - se peça procurada foi encontrada.
+*
+***********************************************************************/
+
+/* Assertivas de entrada TAB_EhCasaFinal
+*  Existir um tabuleiro ja criado.
+*  Ponteiro passado como parâmetro deverá fazer referência correta.
+*
+*  Fim Assertivas de Entrada TAB_EhCasaFinal */
+
+TAB_CondRet TAB_EhCasaFinal ( TAB_tpLudo pTabuleiro , int * n ) ;
+
+/*  Assertiva de Saida TAB_EhCasaFinal
+*   Ponteiro n deverá ser preenchido corretamente (0->F, 1->V)
+*   A funcao retorna um TAB_CondRet
+*
+*   Fim Assertiva de Saida TAB_EhCasaFinal */
+
+/***********************************************************************
+*
+*  $FC Função: TAB  &Exibe Tabuleiro
+*
+*  $ED Descrição da função
+*     Exibe na tela o tabuleiro de Ludo.
+*
+*  $EP Parâmetros
+*     pTabuleiro - ponteiro para tabuleiro passado como referencia.
+*     pPeca - ponteiro para peca.
+*
+*  $FV Valor retornado
+*     TAB_CondRetOK - se peça procurada foi encontrada.
+*
+***********************************************************************/
+
+/* Assertivas de entrada TAB_ExibeTabuleiro
+*  Existir um tabuleiro ja criado.
+*  A cor passada como parâmetro deverá ser válida (cor entre 0 e 3).
+*
+*  Fim Assertivas de Entrada TAB_ExibeTabuleiro */
+
+TAB_CondRet TAB_ExibeTabuleiro ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+
+/*  Assertiva de Saida TAB_ExibeTabuleiro
+*   A funcao retorna um TAB_CondRet
+*
+*   Fim Assertiva de Saida TAB_ExibeTabuleiro */
 
 #undef TABULEIRO_EXT
 
-
 /*********** Fim do módulo de definição: TAB Modulo Tabuleiro **********/
-
 
 #else
 #endif
