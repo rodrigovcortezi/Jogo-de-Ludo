@@ -496,10 +496,16 @@ static int ValidaInsercao ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca )
 
 static void InserePecaJogo ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca )
 {
-	int cor ;
+	int cor , valid ;
 	char status ;
 	TAB_CondRet TabuleiroRetorno ;
 	PEC_CondRet PecasRetorno ;
+
+	valid = ValidaInsercao ( pTabuleiro , pPeca ) ;
+	if ( !valid ) {
+		pcor(5); printf("\n\n\tINSERCAO INVALIDA !!\n\n"); pcor(4);
+		exit(1) ;
+	}
 
 	PecasRetorno = PEC_ObtemStatus ( pPeca , &status ) ;
 	if ( PecasRetorno != PEC_CondRetOK ) {
